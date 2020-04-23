@@ -1,0 +1,30 @@
+<h1>SignUp</h1>
+
+<%= form_with(model: @user,  local: true, method: "post", url: users_path) do |f|%>
+  <p>
+    <%= f.label(:name, "Name:") %>
+    <%= f.text_field :name %>
+  </p>
+
+  <p>
+    <%= f.label(:username, "Username:") %>
+    <%= f.text_field(:username) %>
+  </p>
+
+  <p>
+    <%= f.label(:password, "Password:") %>
+    <%= f.password_field(:password) %>
+  </p>
+
+  <p>
+    <%= f.label(:phone, "Phone:") %>
+    <%= f.phone_field(:phone) %>
+  </p>
+
+  <p>
+    <%= f.label(:email, "Email:") %>
+    <%= f.email_field(:email) %>
+  </p>
+
+  <%= f.submit %>
+<% end %>

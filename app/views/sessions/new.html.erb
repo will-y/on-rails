@@ -1,0 +1,15 @@
+<h1>Log In</h1>
+
+<%= form_with(local: true, method: "post", url: sessions_path) do%>
+  <p>
+    <%= label_tag(:username, "Username:") %>
+    <%= text_field_tag :username %>
+  </p>
+
+  <p>
+    <%= label_tag(:password, "Password:") %>
+    <%= password_field_tag :password %>
+  </p>
+
+  <%= submit_tag("Log In") %>
+<% end %>
