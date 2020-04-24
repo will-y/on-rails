@@ -1,2 +1,24 @@
 <h1>Cassandra Connection</h1>
-<%= @data %>
+<h2>Cluster Name: <%= @name %></h2>
+<h3>Hosts:</h3>
+<table>
+	<thead>
+		<tr>
+			<th>IP</th>
+			<th>ID</th>
+			<th>DataCenter</td>
+			<th>Rack</td>
+		</tr>
+	</thead>
+	<tbody>
+		<% @hosts.each do |host| %>
+			<tr>
+				<td><%= host.ip%></td>
+				<td><%= host.id%></td>
+				<td><%= host.datacenter%></td>
+				<td><%= host.rack%></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+
