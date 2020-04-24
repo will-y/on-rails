@@ -56,3 +56,8 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # Cassandra Driver
 gem 'cassandra-driver'
+
+#Neo4j Drivers
+gem 'neo4j-core'
+gem 'neo4j'
+gem 'neo4j-rake_tasks'
