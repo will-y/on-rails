@@ -22,3 +22,8 @@
 	</tbody>
 </table>
 
+<% if @connected %>
+	<h2> Neo4j Connection: <span style="color:green">Online</span></h2>
+<% else %>
+	<h2> Neo4j Connection: <span style="color:red">Offline</span></h2>
+<% end %>

@@ -9,7 +9,8 @@ class CassandraController < ApplicationController
 	@hosts = @cluster.each_host
 
 	# code for neo4j connections
-	http_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new('http://neo4j:pass@localhost:7474')
-	neo4j_session = Neo4j::Core::CypherSession.new(http_adaptor)
+	@http_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new('http://neo4j:pass@localhost:7474')
+	@neo4j_session = Neo4j::Core::CypherSession.new(@http_adaptor)
+	@connected = @http_adaptor.connected?
     end
 end
