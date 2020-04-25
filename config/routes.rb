@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :users
-  resources :sessions
+  resource :sessions
 
   post '/sign_up/:User', to: 'sign_up#sign_up_post'
   get 'sign_up/', to: 'sign_up#sign_up'

@@ -10,7 +10,12 @@ class SessionsController < ApplicationController
       session[:user_id] = User.find_by(username: params[:username]).id
       redirect_to users_path
     else
-      redirect_to new_session_path, alert: "Username or password incorrect!"
+      redirect_to new_sessions_path, alert: "Username or password incorrect!"
     end
+  end
+
+  def destroy
+    session[:user_id] = nil
+    redirect_to new_sessions_path, notice: "Logged Out"
   end
 end
