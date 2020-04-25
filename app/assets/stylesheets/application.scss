@@ -14,3 +14,14 @@
  *= require_self
  */
 @import 'bootstrap/dist/css/bootstrap';
+
+body {
+  background-color: #26283b;
+  color: #a5a6a4;
+}
+
+.form-control {
+  background-color: #666666;
+  border-color: #3e3e5a;
+  color: white;
+}

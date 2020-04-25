@@ -1,11 +1,15 @@
 class ApplicationController < ActionController::Base
-  before_action :is_authenticated
+  before_action :set_current_user, :is_authenticated
+
   def is_authenticated
-    @current_user = User.find(session[:user_id]) rescue nil
     unless @current_user
       redirect_to new_session_path
       false
     end
     true
+  end
+
+  def set_current_user
+    @current_user = User.find(session[:user_id]) rescue nil
   end
 end

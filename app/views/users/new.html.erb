@@ -1,30 +1,33 @@
-<h1>SignUp</h1>
+<div class="container">
+  <h2 class="mt-3 mb-4">Sign Up</h2>
 
-<%= form_with(model: @user,  local: true, method: "post", url: users_path) do |f|%>
-  <p>
-    <%= f.label(:name, "Name:") %>
-    <%= f.text_field :name %>
-  </p>
+  <%= form_with(model: @user,  local: true, method: "post", url: users_path) do |f|%>
 
-  <p>
-    <%= f.label(:username, "Username:") %>
-    <%= f.text_field(:username) %>
-  </p>
+    <div class="form-group">
+      <%= f.label(:name, "Name:") %>
+      <%= f.text_field(:name, class: "form-control") %>
+    </div>
 
-  <p>
-    <%= f.label(:password, "Password:") %>
-    <%= f.password_field(:password) %>
-  </p>
+    <div class="form-group">
+      <%= f.label(:username, "Username:") %>
+      <%= f.text_field(:username, class: "form-control") %>
+    </div>
 
-  <p>
-    <%= f.label(:phone, "Phone:") %>
-    <%= f.phone_field(:phone) %>
-  </p>
+    <div class="form-group">
+      <%= f.label(:password, "Password:") %>
+      <%= f.password_field(:password, class: "form-control") %>
+    </div>
 
-  <p>
-    <%= f.label(:email, "Email:") %>
-    <%= f.email_field(:email) %>
-  </p>
+    <div class="form-group">
+      <%= f.label(:phone, "Phone:") %>
+      <%= f.phone_field(:phone, class: "form-control") %>
+    </div>
 
-  <%= f.submit %>
-<% end %>
+    <div class="form-group">
+      <%= f.label(:email, "Email:") %>
+      <%= f.email_field(:email, class: "form-control") %>
+    </div>
+
+    <%= f.submit("Sign Up", class: "btn btn-outline-success")%>
+  <% end %>
+</div>
