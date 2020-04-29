@@ -1,10 +1,7 @@
 Rails.application.routes.draw do
   resources :users
   resource :sessions
-
-  post '/sign_up/:User', to: 'sign_up#sign_up_post'
-  get 'sign_up/', to: 'sign_up#sign_up'
-  get 'sign_up/total', to: 'sign_up#index'
+  resources :schedules
 
   get 'cassandra', to: 'cassandra#index'
 

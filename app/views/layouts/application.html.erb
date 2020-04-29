@@ -23,8 +23,8 @@
         <li class="nav-item">
           <a class="nav-link" href="#">Destinations</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Schedule</a>
+        <li class="nav-item <%= "active" if controller_name == 'schedules' %> ">
+          <%= link_to "Schedule", schedules_path, class: "nav-link"%>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Train Status</a>
