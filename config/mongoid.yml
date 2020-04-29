@@ -9,7 +9,10 @@ development:
       # Provides the hosts the default client can connect to. Must be an array
       # of host:port pairs. (required)
       hosts:
-        - localhost:27017
+        - 137.112.104.138:40003
+        - 137.112.104.136:40001
+        - 137.112.104.137:40002
+        - 137.112.104.139:40000
       options:
         # Note that all options listed below are Ruby driver client options (the mongo gem).
         # Please refer to the driver documentation of the version of the mongo gem you are using
@@ -50,7 +53,7 @@ development:
         # Force a the driver cluster to behave in a certain manner instead of auto-
         # discovering. Can be one of: :direct, :replica_set, :sharded. Set to :direct
         # when connecting to hidden members of a replica set.
-        # connect: :direct
+        connect: :replica_set
 
         # Changes the default time in seconds the server monitors refresh their status
         # via ismaster commands. (default: 10)
@@ -82,7 +85,7 @@ development:
 
         # The name of the replica set to connect to. Servers provided as seeds that do
         # not belong to this replica set will be ignored.
-        # replica_set: name
+        replica_set: onrails
 
         # Whether to connect to the servers via ssl. (default: false)
         # ssl: true

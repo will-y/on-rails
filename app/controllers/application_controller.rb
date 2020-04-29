@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
 
   def is_authenticated
     unless @current_user
-      redirect_to new_session_path
+      redirect_to new_sessions_path
       false
     end
     true
