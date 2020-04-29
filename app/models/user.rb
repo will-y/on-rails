@@ -18,9 +18,16 @@ class User
     return user && user.encrypted_password == password.crypt("$5$round=7845$salt$")
   end
 
+  def self.validate_username(username)
+    user = User.where(username: username).first
+    return !user
+  end
+
   def encrypt_password
     if password
       self.encrypted_password = password.crypt("$5$round=7845$salt$")
     end
   end
+
+
 end
