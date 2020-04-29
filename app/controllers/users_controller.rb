@@ -22,7 +22,7 @@ class UsersController < ApplicationController
   end
 
   def edit
-    redirect_to root_path if session[:user_id] != params[:id]
+    redirect_to root_path if session[:user_id]["$oid"] != params[:id]
     @user = User.find(params[:id])
   end
 
