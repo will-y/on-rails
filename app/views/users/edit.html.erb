@@ -1,0 +1,31 @@
+<div class="container">
+  <%= form_for @user do |f|%>
+
+    <div class="form-group">
+      <%= f.label(:name, "New Name:") %>
+      <%= f.text_field(:name, class: "form-control") %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label(:username, "New Username:") %>
+      <%= f.text_field(:username, class: "form-control") %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label(:password, "New Password:") %>
+      <%= f.password_field(:password, class: "form-control") %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label(:phone, "New Phone:") %>
+      <%= f.phone_field(:phone, class: "form-control") %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label(:email, "New Email:") %>
+      <%= f.email_field(:email, class: "form-control") %>
+    </div>
+
+    <%= f.submit("Confirm", class: "btn btn-outline-primary")%>
+  <% end %>
+</div>

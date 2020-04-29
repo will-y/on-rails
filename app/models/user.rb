@@ -19,7 +19,8 @@ class User
   end
 
   def encrypt_password
-    self.encrypted_password = password.crypt("$5$round=7845$salt$")
-    puts encrypted_password
+    if password
+      self.encrypted_password = password.crypt("$5$round=7845$salt$")
+    end
   end
 end
