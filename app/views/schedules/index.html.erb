@@ -7,6 +7,7 @@
         <th scope="col">Destination</th>
         <th scope="col">Departure Time</th>
         <th scope="col">Train</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -16,6 +17,7 @@
           <td><%= row["goingto"]%></td>
           <td><%= row["time"].to_s%></td>
           <td><%= row["train"]%></td>
+          <td> <%= link_to "Buy Tickets", new_ticket_path(arrivingat: row["arrivingat"], train: row["train"], time: row["time"]), class: "btn btn-outline-primary"%></td>
         </tr>
       <% end %>
 

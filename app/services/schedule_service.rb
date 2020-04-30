@@ -42,5 +42,10 @@ class ScheduleService
     return results
   end
 
+  def get_row(arrivingAt, time, train)
+    #TODO: Give the single record that matches this key
+    {arrivingat: "ex", "time": "ex", train: "train", goingto: "ex", price: 12, price_1st:20}.with_indifferent_access
+  end
+
 
 end

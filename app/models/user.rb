@@ -13,6 +13,8 @@ class User
   field :phone, type: String
   field :email
 
+  has_many :tickets
+
   def self.authenticate(username, password)
     user = User.where(username: username).first
     return user && user.encrypted_password == password.crypt("$5$round=7845$salt$")

@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :users
   resource :sessions
   resources :schedules
+  resources :tickets
 
   get 'cassandra', to: 'cassandra#index'
 

@@ -21,10 +21,21 @@ body {
 }
 
 .form-control {
-  background-color: #666666;
-  border-color: #3e3e5a;
-  color: white;
+  background-color: #575757;
+  border-color: #222230;
+  color: #303247;
 }
+
+.form-control:focus {
+  background-color: #666666;
+  border-color: #1d0c87;
+  color: #303247;
+}
+.form-control::placeholder {
+  color: #a5a6a4;
+  opacity: 1;
+}
+
 
 .alert-danger {
   background-color: rgb(64, 11, 16);
