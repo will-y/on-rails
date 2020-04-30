@@ -14,15 +14,19 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    if @user.save
-      redirect_to users_path
+    if User.validate_username(user_params[:username])
+      if @user.save
+        redirect_to root_path
+      else
+        render action: "new"
+      end
     else
-      render action: "new"
+      redirect_to new_user_path, alert: "Username Taken"
     end
   end
 
   def edit
-    redirect_to root_path if session[:user_id] != params[:id]
+    redirect_to root_path if session[:user_id]["$oid"] != params[:id]
     @user = User.find(params[:id])
   end
 

@@ -3,12 +3,12 @@
 
     <div class="form-group">
       <%= f.label(:name, "New Name:") %>
-      <%= f.text_field(:name, class: "form-control") %>
+      <%= f.text_field(:name, class: "form-control", required: true) %>
     </div>
 
     <div class="form-group">
       <%= f.label(:username, "New Username:") %>
-      <%= f.text_field(:username, class: "form-control") %>
+      <%= f.text_field(:username, class: "form-control", required: true) %>
     </div>
 
     <div class="form-group">
@@ -18,12 +18,12 @@
 
     <div class="form-group">
       <%= f.label(:phone, "New Phone:") %>
-      <%= f.phone_field(:phone, class: "form-control") %>
+      <%= f.phone_field(:phone, class: "form-control", required: true) %>
     </div>
 
     <div class="form-group">
       <%= f.label(:email, "New Email:") %>
-      <%= f.email_field(:email, class: "form-control") %>
+      <%= f.email_field(:email, class: "form-control", required: true) %>
     </div>
 
     <%= f.submit("Confirm", class: "btn btn-outline-primary")%>
