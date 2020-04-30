@@ -1,1 +1,24 @@
-<h1> Schedule</h1>
+<div class="container">
+  <h1 class="text-center"> List of Train Schedules</h1>
+  <table class="table table-dark">
+    <thead>
+      <tr>
+        <th scope="col">Origin</th>
+        <th scope="col">Destination</th>
+        <th scope="col">Departure Time</th>
+        <th scope="col">Train</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @schedule.each do |row| %>
+        <tr>
+          <td><%= row["arrivingat"]%></td>
+          <td><%= row["goingto"]%></td>
+          <td><%= row["time"].to_s%></td>
+          <td><%= row["train"]%></td>
+        </tr>
+      <% end %>
+
+    </tbody>
+  </table>
+</div>

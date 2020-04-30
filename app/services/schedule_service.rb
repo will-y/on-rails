@@ -4,7 +4,7 @@ class ScheduleService
 
   @canOrderBy = %w[arrivingAt time train goingTo]
 
-  def initialize()
+  def initialize
     @cluster = Cassandra.cluster(hosts: ['137.112.104.137', '137.112.104.136', '137.112.104.138'])
     @stations = @cluster.connect("stations")
   end
@@ -36,7 +36,7 @@ class ScheduleService
     end
   end
 
-  def getScheduale ()
+  def getSchedule
     search = @stations.prepare("Select * From arrivals")
     results = @stations.execute(search)
     return results
