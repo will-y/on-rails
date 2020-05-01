@@ -1,7 +1,7 @@
 <div class="container">
   <%= link_to "Back", schedules_path, class: "btn btn-outline-primary" %>
   <h1 class="text-center">Buy Ticket</h1>
-  <h2 class="text-center"><b><%= params["arrivingat"] %></b> to <b><%= @going_to%></b></h2>
+  <h2 class="text-center"><b><%= params["arrivingat"] %></b> to <b><%= params["goingto"]%></b></h2>
   <h3 class="text-center"><b><%= params["time"] %></b> on <b><%=params["train"]%></b></h3>
   <h3 class="text-center">$<span id="price"><%= @price%></span><span id="price_1st" style="display: none"><%= @price_1st %></span></h3>
   <%= form_with(model: @ticket,  local: true, method: "post", url: tickets_path) do |f|%>
