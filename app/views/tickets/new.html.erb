@@ -1,4 +1,5 @@
 <div class="container">
+  <%= link_to "Back", schedules_path, class: "btn btn-outline-primary" %>
   <h1 class="text-center">Buy Ticket</h1>
   <h2 class="text-center"><b><%= params["arrivingat"] %></b> to <b><%= @going_to%></b></h2>
   <h3 class="text-center"><b><%= params["time"] %></b> on <b><%=params["train"]%></b></h3>
