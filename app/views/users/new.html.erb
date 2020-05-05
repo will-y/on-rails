@@ -3,31 +3,90 @@
 
   <%= form_with(model: @user,  local: true, method: "post", url: users_path) do |f|%>
 
-    <div class="form-group">
-      <%= f.label(:name, "Name:") %>
-      <%= f.text_field(:name, class: "form-control", required: true) %>
+    <div class="form-row">
+      <div class="col form-group">
+        <%= f.label(:first_name, "First Name") %>
+        <%= f.text_field(:first_name, class: "form-control", required: true, placeholder:"John") %>
+      </div>
+      <div class="col form-group">
+        <%= f.label(:last_name, "First Name") %>
+        <%= f.text_field(:last_name, class: "form-control", required: true, placeholder:"Smith") %>
+      </div>
     </div>
 
     <div class="form-group">
-      <%= f.label(:username, "Username:") %>
+      <%= f.label(:username, "Username") %>
       <%= f.text_field(:username, class: "form-control", required: true) %>
     </div>
 
     <div class="form-group">
-      <%= f.label(:password, "Password:") %>
+      <%= f.label(:password, "Password") %>
       <%= f.password_field(:password, class: "form-control", required: true) %>
     </div>
 
     <div class="form-group">
-      <%= f.label(:phone, "Phone:") %>
+      <%= f.label(:phone, "Phone") %>
       <%= f.phone_field(:phone, class: "form-control", required: true) %>
     </div>
 
     <div class="form-group">
-      <%= f.label(:email, "Email:") %>
+      <%= f.label(:email, "Email") %>
       <%= f.email_field(:email, class: "form-control", required: true) %>
     </div>
 
-    <%= f.submit("Sign Up", class: "btn btn-outline-success")%>
+    <div class="form-check mb-2">
+      <%= f.check_box(:show_payment, class: "form-check-input", id: "show_payment") %>
+      <%= f.label(:show_payment, "Enter Payment Info", class: "form-check-label") %>
+    </div>
+
+    <div id="payment" style="display: none">
+      <div class="form-row">
+        <div class="col">
+          <%= f.label(:address, "Address") %>
+          <%= f.text_field(:address, class: "form-control", placeholder: "123 Example Dr.") %>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-6">
+          <%= f.label(:city, "City") %>
+          <%= f.text_field(:city, class: "form-control") %>
+        </div>
+        <div class="col-md-4">
+          <label>State</label>
+          <%= f.select(:state, @states, {include_blank: true}, {class: "form-control"}) %>
+        </div>
+        <div class="col-md-2">
+          <%= f.label(:zip, "Zip") %>
+          <%= f.text_field(:zip, class: "form-control") %>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-11 form-group">
+          <%= f.label(:credit_card, "Credit Card Number") %>
+          <%= f.text_field(:credit_card, class: "form-control", placeholder: "xxxx-xxxx-xxxx-xxxx") %>
+        </div>
+        <div class="col-md-1 form-group">
+          <%= f.label(:cvv, "CVV") %>
+          <%= f.text_field(:cvv, class: "form-control", placeholder: "xxx") %>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col form-group">
+          <%= f.label(:experation_date, "Expiration Date") %><br>
+          <%= f.date_select(:date, {discard_day: true, order: [:month, :year], date_separator:"/"}, {class: "form-control select-date"}) %>
+        </div>
+
+      </div>
+    </div>
+
+    <%= f.submit("Sign Up", class: "btn btn-outline-success mb-4")%>
   <% end %>
 </div>
+
+<script type="application/javascript">
+    $( document ).ready(function() {
+        $('#show_payment').change(function () {
+            $('#payment').toggle()
+        })
+    });
+</script>
