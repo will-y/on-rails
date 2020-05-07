@@ -42,10 +42,6 @@
       <% end %>
     </div>
   </nav>
-    <% if @current_user %>
-    <h1>Welcome <%=@current_user.name %></h1>
-    <%#= link_to "Log Out", sessions_path, method: :delete, data: {confirm: "Are you sure?"}, class: "btn btn-outline-success my-2 my-sm-0" %>
-    <% end %>
     <% flash.each do |type, message| %>
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <%= message %>

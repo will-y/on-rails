@@ -19,7 +19,7 @@ class User
   field :zip, type: String
   field :credit_card, type: String
   field :cvv, type: String
-  field :experation_date, type: Date
+  field :exeration_date, type: String
 
   has_many :tickets
 

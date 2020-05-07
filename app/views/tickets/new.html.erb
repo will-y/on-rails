@@ -1,10 +1,11 @@
 <div class="container">
-  <%= link_to "Back", schedules_path, class: "btn btn-outline-primary" %>
+  <%= link_to "Back", schedules_path, class: "btn btn-outline-primary mt-2" %>
   <h1 class="text-center">Buy Ticket</h1>
-  <h2 class="text-center"><b><%= params["arrivingat"] %></b> to <b><%= params["goingto"]%></b></h2>
-  <h3 class="text-center"><b><%= params["time"] %></b> on <b><%=params["train"]%></b></h3>
-  <h3 class="text-center">$<span id="price"><%= @price%></span><span id="price_1st" style="display: none"><%= @price_1st %></span></h3>
-  <%= form_with(model: @ticket,  local: true, method: "post", url: tickets_path) do |f|%>
+  <h2 class="text-center"><b><%= params["arrivingat"] %></b> to <b><%= params["goingto"] %></b></h2>
+  <h3 class="text-center"><b><%= params["time"] %></b> on <b><%= params["train"] %></b></h3>
+  <h3 class="text-center">$<span id="price"><%= @price %></span><span id="price_1st" style="display: none"><%= @price_1st %></span></h3>
+
+  <%= form_with(model: @ticket, local: true, method: "post", url: tickets_path) do |f| %>
 
     <div class="form-group">
       <%= f.hidden_field(:origin, class: "form-control", required: true, value: params["arrivingat"]) %>
@@ -16,101 +17,49 @@
 
     <div class="form-row">
       <div class="col form-group">
-        <label>First Name</label>
-        <input type="text" class="form-control" placeholder="John" required>
+        <%= f.label(:first_name, "First Name") %>
+        <%= f.text_field(:first_name, class: "form-control", required: true, placeholder:"John", value: @user.first_name) %>
       </div>
       <div class="col form-group">
-        <label>Last Name</label>
-        <input type="text" class="form-control" placeholder="Smith" required>
+        <%= f.label(:last_name, "First Name") %>
+        <%= f.text_field(:last_name, class: "form-control", required: true, placeholder:"Smith", value: @user.last_name) %>
       </div>
     </div>
+
     <div class="form-row">
       <div class="col">
-        <label>Address</label>
-        <input type="text" class="form-control" placeholder="123 Example Dr." required>
+        <%= f.label(:address, "Address") %>
+        <%= f.text_field(:address, class: "form-control", placeholder: "123 Example Dr.", value: @user.address) %>
       </div>
     </div>
     <div class="form-row">
       <div class="col-md-6">
-        <label>City</label>
-        <input type="text" class="form-control" required>
+        <%= f.label(:city, "City") %>
+        <%= f.text_field(:city, class: "form-control", value: @user.city) %>
       </div>
       <div class="col-md-4">
         <label>State</label>
-        <select class="form-control" required>
-          <option selected>Choose...</option>
-          <option value="AL">Alabama</option>
-          <option value="AK">Alaska</option>
-          <option value="AZ">Arizona</option>
-          <option value="AR">Arkansas</option>
-          <option value="CA">California</option>
-          <option value="CO">Colorado</option>
-          <option value="CT">Connecticut</option>
-          <option value="DE">Delaware</option>
-          <option value="DC">District Of Columbia</option>
-          <option value="FL">Florida</option>
-          <option value="GA">Georgia</option>
-          <option value="HI">Hawaii</option>
-          <option value="ID">Idaho</option>
-          <option value="IL">Illinois</option>
-          <option value="IN">Indiana</option>
-          <option value="IA">Iowa</option>
-          <option value="KS">Kansas</option>
-          <option value="KY">Kentucky</option>
-          <option value="LA">Louisiana</option>
-          <option value="ME">Maine</option>
-          <option value="MD">Maryland</option>
-          <option value="MA">Massachusetts</option>
-          <option value="MI">Michigan</option>
-          <option value="MN">Minnesota</option>
-          <option value="MS">Mississippi</option>
-          <option value="MO">Missouri</option>
-          <option value="MT">Montana</option>
-          <option value="NE">Nebraska</option>
-          <option value="NV">Nevada</option>
-          <option value="NH">New Hampshire</option>
-          <option value="NJ">New Jersey</option>
-          <option value="NM">New Mexico</option>
-          <option value="NY">New York</option>
-          <option value="NC">North Carolina</option>
-          <option value="ND">North Dakota</option>
-          <option value="OH">Ohio</option>
-          <option value="OK">Oklahoma</option>
-          <option value="OR">Oregon</option>
-          <option value="PA">Pennsylvania</option>
-          <option value="RI">Rhode Island</option>
-          <option value="SC">South Carolina</option>
-          <option value="SD">South Dakota</option>
-          <option value="TN">Tennessee</option>
-          <option value="TX">Texas</option>
-          <option value="UT">Utah</option>
-          <option value="VT">Vermont</option>
-          <option value="VA">Virginia</option>
-          <option value="WA">Washington</option>
-          <option value="WV">West Virginia</option>
-          <option value="WI">Wisconsin</option>
-          <option value="WY">Wyoming</option>
-        </select>
+        <%= f.select(:state, options_for_select(@states, @user.state), {include_blank: true}, {class: "form-control", value: @user.state}) %>
       </div>
       <div class="col-md-2">
-        <label>Zip</label>
-        <input type="text" class="form-control" required>
+        <%= f.label(:zip, "Zip") %>
+        <%= f.text_field(:zip, class: "form-control", value: @user.zip) %>
       </div>
     </div>
     <div class="form-row">
       <div class="col-md-11 form-group">
-        <label>Credit Card Number</label>
-        <input type="text" class="form-control" placeholder="xxxx-xxxx-xxxx-xxxx" required>
+        <%= f.label(:credit_card, "Credit Card Number") %>
+        <%= f.text_field(:credit_card, class: "form-control", placeholder: "xxxx-xxxx-xxxx-xxxx", value: @user.credit_card) %>
       </div>
       <div class="col-md-1 form-group">
-        <label>CVV</label>
-        <input type="text" class="form-control" placeholder="xxx" required>
+        <%= f.label(:cvv, "CVV") %>
+        <%= f.text_field(:cvv, class: "form-control", placeholder: "xxx", value: @user.cvv) %>
       </div>
     </div>
     <div class="form-row">
       <div class="col form-group">
-        <label>Expiration Date</label>
-        <input type="date" class="form-control" required>
+        <%= f.label(:experation_date, "Expiration Date") %><br>
+        <%= f.date_select(:date, {discard_day: true, order: [:month, :year], date_separator: "/"}, {class: "form-control select-date"}) %>
       </div>
 
     </div>
@@ -125,15 +74,15 @@
       <label class="form-check-label" for="firstClass">First Class</label>
     </div>
 
-    <%= f.submit("Buy Now", class: "btn btn-outline-primary")%>
+    <%= f.submit("Buy Now", class: "btn btn-outline-primary") %>
   <% end %>
-</div>
+  </div>
 
-<script type="application/javascript">
-    $( document ).ready(function() {
-        $('#firstClass').change(function () {
-            $('#price').toggle()
-            $('#price_1st').toggle()
-        })
-    });
-</script>
+  <script type="application/javascript">
+      $(document).ready(function () {
+          $('#firstClass').change(function () {
+              $('#price').toggle()
+              $('#price_1st').toggle()
+          })
+      });
+  </script>

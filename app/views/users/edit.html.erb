@@ -2,27 +2,32 @@
   <%= form_for @user do |f|%>
 
     <div class="form-group">
-      <%= f.label(:name, "New Name:") %>
-      <%= f.text_field(:name, class: "form-control", required: true) %>
+      <%= f.label(:first_name, "New First Name") %>
+      <%= f.text_field(:first_name, class: "form-control", required: true) %>
     </div>
 
     <div class="form-group">
-      <%= f.label(:username, "New Username:") %>
+      <%= f.label(:last_name, "New First Name") %>
+      <%= f.text_field(:last_name, class: "form-control", required: true) %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label(:username, "New Username") %>
       <%= f.text_field(:username, class: "form-control", required: true) %>
     </div>
 
     <div class="form-group">
-      <%= f.label(:password, "New Password:") %>
+      <%= f.label(:password, "New Password") %>
       <%= f.password_field(:password, class: "form-control") %>
     </div>
 
     <div class="form-group">
-      <%= f.label(:phone, "New Phone:") %>
+      <%= f.label(:phone, "New Phone") %>
       <%= f.phone_field(:phone, class: "form-control", required: true) %>
     </div>
 
     <div class="form-group">
-      <%= f.label(:email, "New Email:") %>
+      <%= f.label(:email, "New Email") %>
       <%= f.email_field(:email, class: "form-control", required: true) %>
     </div>
 
