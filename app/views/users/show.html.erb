@@ -25,4 +25,34 @@
     </tbody>
   </table>
   <%= link_to "Edit", edit_user_path, class: "btn btn-outline-primary"%>
+  <h3 class="text-center mb-4">Tickets Purchased</h3>
+  <% @user.tickets.each do |ticket| %>
+    <table class="table table-dark mb-4">
+      <tbody>
+
+        <tr class="profile-row">
+          <td>Origin</td>
+          <td><%= ticket.origin %></td>
+        </tr>
+        <tr class="profile-row">
+          <td>Destination</td>
+          <td><%= ticket.destination %></td>
+        </tr>
+        <tr class="profile-row">
+          <td>Train</td>
+          <td><%= ticket.train %></td>
+        </tr>
+        <tr class="profile-row">
+          <td>Price</td>
+          <td>$<%= ticket.price %></td>
+        </tr>
+        <tr class="profile-row">
+          <td>time</td>
+          <td><%= ticket.time %></td>
+        </tr>
+
+
+      </tbody>
+    </table>
+  <% end %>
 </div>
