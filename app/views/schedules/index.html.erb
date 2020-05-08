@@ -1,5 +1,12 @@
 <div class="container">
   <h1 class="text-center"> List of Train Schedules</h1>
+  <%= form_with(url: schedules_path, local: true, method: "get", class: "form-inline filter-form pt-3  pb-3 pl-3") do |f| %>
+    <%= f.text_field(:origin, class: "form-control mr-1", placeholder:"Origin") %>
+    <%= f.text_field(:destination, class: "form-control mr-1", placeholder:"Destination") %>
+    <%= f.text_field(:time, class: "form-control mr-1", placeholder:"Time") %>
+    <%= f.text_field(:train, class: "form-control mr-1", placeholder:"Train") %>
+    <%= f.submit("Filter", class: "btn btn-outline-success")%>
+  <% end %>
   <table class="table table-dark">
     <thead>
       <tr>
