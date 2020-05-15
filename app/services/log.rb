@@ -1,5 +1,6 @@
 require 'cassandra'
 require 'neo4j/core/cypher_session/adaptors/http'
+require 'yaml'
 
 class Log
   @@log = Array.new
@@ -24,6 +25,44 @@ class Log
     @@log.push(procedure)
     #puts(@@log)
     goThroughLog
+  end
+
+  def self.add_to_mongo_log(object, method)
+    File.write("log.txt", "#{object.id}##{method}\n", mode: "a")
+    File.open(object.id.to_s + ".bin", "wb") { |file| file.write(Marshal.dump(object)) }
+  end
+
+  def self.mongo_log
+    if File.file?("log.txt")
+      puts "----------------------"
+      puts File.read("log.txt")
+      failed = false
+      tmp = ""
+      File.foreach("log.txt") do |line|
+
+        if failed
+          tmp = tmp + line
+        else
+
+          line = line.split("#")
+          #object = YAML.load(File.read(line[0] + ".yml"))
+          object = Marshal.load(File.binread(line[0] + ".bin"))
+
+          begin
+            if !object.send(line[1].strip)
+              failed = true
+              tmp = tmp + line.join("#")
+            else
+              `rm #{line[0]}.bin`
+            end
+          rescue
+            failed = true
+            tmp = tmp + line.join("#")
+          end
+        end
+      end
+      File.write("log.txt", tmp)
+    end
   end
 
 

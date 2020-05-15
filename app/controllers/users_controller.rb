@@ -16,10 +16,16 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if User.validate_username(user_params[:username])
-      if @user.save
+      begin
+        if @user.save
+          redirect_to root_path
+        else
+
+          render action: "new"
+        end
+      rescue Mongo::Error::NoServerAvailable
+        Log.add_to_mongo_log(@user, "save")
         redirect_to root_path
-      else
-        render action: "new"
       end
     else
       redirect_to new_user_path, alert: "Username Taken"

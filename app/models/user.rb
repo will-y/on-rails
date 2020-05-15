@@ -24,13 +24,21 @@ class User
   has_many :tickets
 
   def self.authenticate(username, password)
-    user = User.where(username: username).first
-    return user && user.encrypted_password == password.crypt("$5$round=7845$salt$")
+    begin
+      user = User.where(username: username).first
+      return user && user.encrypted_password == password.crypt("$5$round=7845$salt$")
+    rescue Mongo::Error::NoServerAvailable
+
+    end
   end
 
   def self.validate_username(username)
+    begin
     user = User.where(username: username).first
     return !user
+    rescue Mongo::Error::NoServerAvailable, SocketError
+      return true
+    end
   end
 
   def encrypt_password
