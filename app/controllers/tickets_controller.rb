@@ -65,6 +65,11 @@ class TicketsController < ApplicationController
     @user = User.find(params[:id])
   end
 
+  def destroy
+    @ticket = Ticket.where(user_id: @current_user, _id: params[:id]).delete
+    redirect_to user_path(@current_user), notice: "Ticket Deleted"
+  end
+
   private
     def ticket_params
       params.require(:ticket).permit(:origin, :destination, :train, :price, :first_class, :time, :user)

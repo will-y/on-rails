@@ -36,5 +36,6 @@
     </table>
 
     <%= link_to "Edit", edit_ticket_path(ticket.id), class: "btn btn-outline-primary mb-4" %>
+    <%= link_to "Delete", ticket_path(ticket.id), method: :delete, data: {confirm: "Are you sure you want to delete this ticket?\nWe might refund your money."}, class: "btn btn-outline-danger ml-2 mb-4" %>
   <% end %>
 </div>
