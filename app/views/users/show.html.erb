@@ -27,7 +27,7 @@
   <%= link_to "Edit", edit_user_path, class: "btn btn-outline-primary"%>
   <h3 class="text-center mb-4">Tickets Purchased</h3>
   <% @user.tickets.each do |ticket| %>
-    <table class="table table-dark mb-4">
+    <table class="table table-dark mb-1">
       <tbody>
 
         <tr class="profile-row">
@@ -50,9 +50,18 @@
           <td>time</td>
           <td><%= ticket.time %></td>
         </tr>
+        <tr class="profile-row">
+          <td>First Class</td>
+          <td><%= ticket.first_class %></td>
+        </tr>
+        <tr class="profile-row">
+          <td>Quantity</td>
+          <td><%= ticket.quantity %></td>
+        </tr>
 
 
       </tbody>
     </table>
+    <%= link_to "Edit", edit_ticket_path(ticket.id), class: "btn btn-outline-primary mb-4" %>
   <% end %>
 </div>

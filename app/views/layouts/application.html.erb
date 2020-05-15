@@ -30,7 +30,7 @@
           <a class="nav-link" href="#">Train Status</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Modify Ticket</a>
+          <%= link_to "Modify Ticket", ticket_path(@current_user), class: "nav-link" %>
         </li>
       </ul>
       <% if @current_user %>

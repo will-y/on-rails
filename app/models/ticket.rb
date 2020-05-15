@@ -7,5 +7,6 @@ class Ticket
   field :price, type: String
   field :first_class, type: Boolean
   field :time, type: String
+  field :quantity, type: Integer
   belongs_to :user
 end

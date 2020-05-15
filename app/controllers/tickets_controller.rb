@@ -23,6 +23,48 @@ class TicketsController < ApplicationController
     redirect_to schedules_path
   end
 
+  def edit
+    @ticket = Ticket.where(user_id: @current_user, _id: params[:id]).first
+    @user = @current_user
+    @price = @ticket.price
+    @destination = @ticket.destination
+    @origin = @ticket.origin
+    @time = @ticket.time
+    @train = @ticket.train
+    @quantity = @ticket.quantity
+  end
+
+  def update
+    @ticket = Ticket.find(params[:id])
+
+    @price = @ticket.price.to_f
+
+    if @ticket.first_class
+        @price = @price / 2
+    end
+
+    if @ticket.quantity.nil?
+        @quantity = 1
+    else
+        @quantity = @ticket.quantity
+    end
+
+    @price = @price / @quantity
+    if params[:ticket][:first_class] == "1"
+        @price = @price * 2
+    end
+
+    @price = (@price * params[:ticket][:quantity].to_i).round(2)
+
+    @ticket.update(quantity: params[:ticket][:quantity], first_class: params[:ticket][:first_class], price: @price)
+
+    redirect_to user_path(@current_user)
+  end
+
+  def show
+    @user = User.find(params[:id])
+  end
+
   private
     def ticket_params
       params.require(:ticket).permit(:origin, :destination, :train, :price, :first_class, :time, :user)
