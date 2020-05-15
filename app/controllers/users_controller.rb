@@ -23,8 +23,8 @@ class UsersController < ApplicationController
 
           render action: "new"
         end
-      rescue Mongo::Error::NoServerAvailable
-        Log.add_to_mongo_log(@user, "save")
+      rescue Mongo::Error::NoServerAvailable, SocketError
+        Log.add_to_mongo_log("mongo", @user, "save")
         redirect_to root_path
       end
     else

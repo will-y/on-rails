@@ -27,14 +27,14 @@ class Log
     goThroughLog
   end
 
-  def self.add_to_mongo_log(object, method)
-    File.write("log.txt", "#{object.id}##{method}\n", mode: "a")
+  def self.add_to_mongo_log(database, object, method)
+    File.write("log.txt", "#{database}##{object.id}##{method}\n", mode: "a")
     File.open(object.id.to_s + ".bin", "wb") { |file| file.write(Marshal.dump(object)) }
   end
 
   def self.mongo_log
     if File.file?("log.txt")
-      puts "----------------------"
+      puts "-----------------"
       puts File.read("log.txt")
       failed = false
       tmp = ""
@@ -46,14 +46,14 @@ class Log
 
           line = line.split("#")
           #object = YAML.load(File.read(line[0] + ".yml"))
-          object = Marshal.load(File.binread(line[0] + ".bin"))
+          object = Marshal.load(File.binread(line[1] + ".bin"))
 
           begin
-            if !object.send(line[1].strip)
+            if !object.send(line[2].strip)
               failed = true
               tmp = tmp + line.join("#")
             else
-              `rm #{line[0]}.bin`
+              `rm #{line[1]}.bin`
             end
           rescue
             failed = true

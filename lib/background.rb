@@ -1,4 +1,4 @@
 loop do
   Log.mongo_log
-  sleep 15
+  sleep 10
 end
