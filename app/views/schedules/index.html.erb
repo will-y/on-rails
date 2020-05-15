@@ -1,32 +1,31 @@
 <div class="container">
   <h1 class="text-center"> List of Train Schedules</h1>
   <%= form_with(url: schedules_path, local: true, method: "get", class: "form-inline filter-form pt-3  pb-3 pl-3") do |f| %>
-    <%= f.text_field(:origin, class: "form-control mr-1", placeholder:"Origin") %>
-    <%= f.text_field(:destination, class: "form-control mr-1", placeholder:"Destination") %>
-    <%= f.text_field(:time, class: "form-control mr-1", placeholder:"Time") %>
-    <%= f.text_field(:train, class: "form-control mr-1", placeholder:"Train") %>
-    <%= f.submit("Filter", class: "btn btn-outline-success")%>
+    <%= f.text_field(:origin, class: "form-control mr-1", placeholder: "Origin") %>
+    <%= f.text_field(:destination, class: "form-control mr-1", placeholder: "Destination") %>
+    <%= f.text_field(:time, class: "form-control mr-1", placeholder: "Time") %>
+    <%= f.submit("Filter", class: "btn btn-outline-success") %>
   <% end %>
   <table class="table table-dark">
     <thead>
-      <tr>
-        <th scope="col">Origin</th>
-        <th scope="col">Destination</th>
-        <th scope="col">Departure Time</th>
-        <th scope="col">Train</th>
-        <th></th>
-      </tr>
+    <tr>
+      <th scope="col">Origin</th>
+      <th scope="col">Destination</th>
+      <th scope="col">Departure Time</th>
+      <th></th>
+    </tr>
     </thead>
     <tbody>
+    <% if !@schedule.nil? %>
       <% @schedule.each do |row| %>
         <tr>
-          <td><%= row["arrivingat"]%></td>
-          <td><%= row["goingto"]%></td>
-          <td><%= row["time"].to_s%></td>
-          <td><%= row["train"]%></td>
-          <td> <%= link_to "Buy Tickets", new_ticket_path(arrivingat: row["arrivingat"], train: row["train"], time: row["time"]), class: "btn btn-outline-primary"%></td>
+          <td><%= row["arrivingat"] %></td>
+          <td><%= row["goingto"] %></td>
+          <td><%= row["time"].to_s %></td>
+          <td> <%= link_to "Buy Tickets", new_ticket_path(arrivingat: row["arrivingat"], goingto: row["goingto"], time: row["time"]), class: "btn btn-outline-primary" %></td>
         </tr>
       <% end %>
+    <% end %>
 
     </tbody>
   </table>

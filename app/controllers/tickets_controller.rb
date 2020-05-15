@@ -3,7 +3,7 @@ class TicketsController < ApplicationController
   def new
     service = ScheduleService.new
     @ticket = Ticket.new
-    @schedule = service.get_row(params["arrivingat"], params["time"], params["train"])
+    service.get_row(params["arrivingat"], params["time"], params["goingto"],Proc.new { |x| setSchedule(x) })
     @schedule.each do |row|
         @price = row["price"]
         @going_to = row["goingto"]
@@ -19,7 +19,16 @@ class TicketsController < ApplicationController
     #@ticket.user = @user
     #@ticket.save
     #@current_user.save
-    @current_user.tickets.create(ticket_params)
+    ticket_params_temp = ticket_params
+    puts( ticket_params_temp)
+    @price = ticket_params_temp['price'].to_f * ticket_params_temp['quantity'].to_i
+    if ticket_params_temp['first_class'] == '1'
+      @price = @price * 2
+    end
+    @price = @price.round(2)
+    ticket_params_temp['price'] = @price
+    puts( @price)
+    @current_user.tickets.create(ticket_params_temp)
     redirect_to schedules_path
   end
 
@@ -72,6 +81,10 @@ class TicketsController < ApplicationController
 
   private
     def ticket_params
-      params.require(:ticket).permit(:origin, :destination, :train, :price, :first_class, :time, :user)
+      params.require(:ticket).permit(:origin, :destination, :quantity, :price, :first_class, :time, :user)
     end
+
+  def setSchedule(schedule)
+    @schedule = schedule
+  end
 end

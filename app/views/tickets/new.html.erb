@@ -2,8 +2,8 @@
   <%= link_to "Back", schedules_path, class: "btn btn-outline-primary mt-2" %>
   <h1 class="text-center">Buy Ticket</h1>
   <h2 class="text-center"><b><%= params["arrivingat"] %></b> to <b><%= @going_to %></b></h2>
-  <h3 class="text-center"><b><%= params["time"] %></b> on <b><%= params["train"] %></b></h3>
-  <h3 class="text-center">$<span id="price"><%= @price %></span><span id="price_1st" style="display: none"><%= @price*3 %></span></h3>
+  <h3 class="text-center"><b><%= params["time"] %></b> </h3>
+  <h3 class="text-center">$<span id="price"><%= @price %></span><span id="price_1st" style="display: none"><%= @price*2 %></span></h3>
   <div class="form-row">
     <div class="col form-group">
       <label>First Name</label>
@@ -169,6 +169,7 @@
     </div>
 
     <div class="form-group">
+      <label class="form-check-label">Quantity</label>
       <%= f.number_field(:quantity, class: "form-control", reuqired: true, value: 1, min: 1) %>
     </div>
 

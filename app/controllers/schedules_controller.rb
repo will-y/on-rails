@@ -1,12 +1,17 @@
 class SchedulesController < ApplicationController
 
   def index
+    @schedule = nil
     service = ScheduleService.new
-    if (!params[:origin] || !params[:time] || !params[:train] || !params[:destination])
-	@schedule = service.getSchedule	
+    if (!params[:origin] || !params[:time] || !params[:destination])
+      service.getSchedule(Proc.new { |x| setSchedule(x) })
     else
-    	@schedule = service.filter(params[:origin], params[:time], params[:train], params[:destination])
+      service.filter(params[:origin], params[:time], params[:destination], Proc.new { |x| setSchedule(x) })
     end
+  end
+
+  def setSchedule(schedule)
+    @schedule = schedule
   end
 
 end
