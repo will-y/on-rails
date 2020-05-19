@@ -1,0 +1,32 @@
+<div class="container">
+  <script src="https://rawgit.com/neo4j-contrib/neovis.js/master/dist/neovis.js"></script>
+  <script>
+    function draw() {
+        var config = {
+            container_id: "viz",
+            server_url: "bolt://137.112.104.139:7687",
+            server_user: "neo4j",
+            server_password: "Onrails433",
+            labels: {
+                "Station": {
+                    caption: "city",
+                    sizeCypher: "MATCH (a:Station)-[t:track]-(:Station) WHERE id(a) = $id  RETURN COUNT(t)*10 as c"
+                }
+            },
+            relationships: {
+                "track": {
+                    caption: false
+                }
+            },
+            initial_cypher: "MATCH (a:Station)-[t:track]-(b:Station) RETURN Distinct a, b, t;"
+        }
+
+        var viz = new NeoVis.default(config);
+
+        viz.render();
+    }
+  </script>
+  <body onload="draw()">
+    <div id="viz"></div>
+  </body>
+</div>
