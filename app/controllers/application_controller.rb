@@ -10,6 +10,10 @@ class ApplicationController < ActionController::Base
   end
 
   def set_current_user
-    @current_user = User.find(session[:user_id]) rescue nil
+    @current_user = session[:user_id] rescue nil
+    puts("````````````````````````````````````````````````")
+    puts("Application controller id")
+    puts(session[:user_id])
+    puts(@current_user)
   end
 end

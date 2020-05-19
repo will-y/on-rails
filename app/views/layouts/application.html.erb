@@ -31,12 +31,12 @@
         </li>
         <% if @current_user %>
         <li class="nav-item">
-          <%= link_to "Modify Ticket", ticket_path(@current_user), class: "nav-link" %>
+          <%= link_to "Modify Ticket", ticket_path(@current_user["$oid"]), class: "nav-link" %>
         </li>
           <% end %>
       </ul>
       <% if @current_user %>
-        <%= link_to "Profile", user_path(@current_user), class: "btn btn-outline-success my-2 my-sm-0 mr-2" %>
+        <%= link_to "Profile", user_path(@current_user["$oid"]), class: "btn btn-outline-success my-2 my-sm-0 mr-2" %>
         <%= link_to "Log Out", sessions_path, method: :delete, data: {confirm: "Are you sure?"}, class: "btn btn-outline-danger my-2 my-sm-0" %>
       <% else %>
         <%= link_to "Log In", new_sessions_path, class: "btn btn-outline-success my-2 my-sm-0 mr-2" %>

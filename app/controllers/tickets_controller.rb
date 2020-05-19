@@ -10,7 +10,7 @@ class TicketsController < ApplicationController
     end
 
     @states = %w(Alaska Alabama Arkansas American\ Samoa Arizona California Colorado Connecticut District\ of\ Columbia Delaware Florida Georgia Guam Hawaii Iowa Idaho Illinois Indiana Kansas Kentucky Louisiana Massachusetts Maryland Maine Michigan Minnesota Missouri Mississippi Montana North\ Carolina North\ Dakota Nebraska New\ Hampshire New\ Jersey New\ Mexico Nevada New\ York Ohio Oklahoma Oregon Pennsylvania Puerto\ Rico Rhode\ Island South\ Carolina South\ Dakota Tennessee Texas Utah Virginia Virgin\ Islands Vermont Washington Wisconsin West\ Virginia Wyoming)
-    @user = @current_user
+    @user = User.find(@current_user)
   end
 
   def create
@@ -28,13 +28,13 @@ class TicketsController < ApplicationController
     @price = @price.round(2)
     ticket_params_temp['price'] = @price
     puts( @price)
-    @current_user.tickets.create(ticket_params_temp)
+    User.find(@current_user).tickets.create(ticket_params_temp)
     redirect_to schedules_path
   end
 
   def edit
     @ticket = Ticket.where(user_id: @current_user, _id: params[:id]).first
-    @user = @current_user
+    @user = User.find(@current_user)
     @price = @ticket.price
     @destination = @ticket.destination
     @origin = @ticket.origin

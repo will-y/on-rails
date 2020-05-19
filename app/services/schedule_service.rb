@@ -5,8 +5,11 @@ class ScheduleService
   @canOrderBy = %w[arrivingAt time train goingTo]
 
   def initialize
-    @cluster = Cassandra.cluster(hosts: %w[137.112.104.137 137.112.104.136 137.112.104.138])
-    @stations = @cluster.connect("stations")
+    begin
+      @cluster = Cassandra.cluster(hosts: %w[137.112.104.137 137.112.104.136 137.112.104.138], connect_timeout: 1)
+      @stations = @cluster.connect("stations")
+    rescue Cassandra::Errors::NoHostsAvailable
+    end
   end
 
   def addToSchedule(arrivingAt, time, goingTo, price)
@@ -58,9 +61,14 @@ class ScheduleService
   end
 
   def getSchedule
-    search = @stations.prepare("Select * From arrivals")
-    results = @stations.execute(search)
-    return results
+    if @stations.nil?
+      return nil
+    else
+      search = @stations.prepare("Select * From arrivals")
+      results = @stations.execute(search)
+      return results
+    end
+
     # query = 'Select * From arrivals'
     #arguments = Array.new()
     #database = 'Cassandra'
@@ -69,59 +77,67 @@ class ScheduleService
   end
 
   def get_row(arrivingAt, time, goingTo)
-    search = @stations.prepare("Select * From arrivals Where arrivingat = ? and time = ? and goingto = ? ALLOW FILTERING;")
-    results = @stations.execute(search, arguments: [arrivingAt, time, goingTo])
-    return results;
+    if @stations.nil?
+      return nil
+    else
+      search = @stations.prepare("Select * From arrivals Where arrivingat = ? and time = ? and goingto = ? ALLOW FILTERING;")
+      results = @stations.execute(search, arguments: [arrivingAt, time, goingTo])
+      return results;
       # query = "Select * From arrivals Where arrivingat = ? and time = ? and goingto = ? ALLOW FILTERING;"
-    #arguments = [arrivingAt, time, goingTo]
-    #database = 'Cassandra'
-    #log = Log.new()
-    #Log.addToLog(database, query, arguments)
+      #arguments = [arrivingAt, time, goingTo]
+      #database = 'Cassandra'
+      #log = Log.new()
+      #Log.addToLog(database, query, arguments)
+      # end
+    end
   end
 
 
   def filter (arrivingAt, time, goingTo)
-    query = "Select * From arrivals"
-    isFirstElement = true;
+    if @stations.nil?
+      return nil
+    else
+      query = "Select * From arrivals"
+      isFirstElement = true;
 
-    if arrivingAt != ''
-      if isFirstElement
-        query = query + " Where arrivingat = '" + arrivingAt + "'"
-        isFirstElement = false;
-      else
-        query = query + " and arrivingat = '" + arrivingAt + "'"
+      if arrivingAt != ''
+        if isFirstElement
+          query = query + " Where arrivingat = '" + arrivingAt + "'"
+          isFirstElement = false;
+        else
+          query = query + " and arrivingat = '" + arrivingAt + "'"
+        end
       end
-    end
 
-    if time != ''
-      if isFirstElement
-        query = query + " Where time = '" + time + "'"
-        isFirstElement = false;
-      else
-        query = query + " and time = '" + time + "'"
+      if time != ''
+        if isFirstElement
+          query = query + " Where time = '" + time + "'"
+          isFirstElement = false;
+        else
+          query = query + " and time = '" + time + "'"
+        end
       end
-    end
 
-    if goingTo != ''
-      if isFirstElement
-        query = query + " Where goingto = '" + goingTo + "'"
-        isFirstElement = false;
-      else
-        query = query + " and goingto = '" + goingTo + "'"
+      if goingTo != ''
+        if isFirstElement
+          query = query + " Where goingto = '" + goingTo + "'"
+          isFirstElement = false;
+        else
+          query = query + " and goingto = '" + goingTo + "'"
+        end
       end
+
+      search = @stations.prepare(query + " allow filtering;")
+      results = @stations.execute(search)
+      return results
+
+      #return results
+      #query = query + " allow filtering;"
+      #arguments = Array.new()
+      #database = 'Cassandra'
+      #log = Log.new()
+      #Log.addToLog(database, query, arguments)
+
     end
-
-     search = @stations.prepare(query + " allow filtering;")
-    results = @stations.execute(search)
-    return results
-
-    #return results
-    #query = query + " allow filtering;"
-    #arguments = Array.new()
-    #database = 'Cassandra'
-    #log = Log.new()
-    #Log.addToLog(database, query, arguments)
-
   end
-
 end
