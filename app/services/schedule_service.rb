@@ -4,12 +4,12 @@ class ScheduleService
 
   @canOrderBy = %w[arrivingAt time train goingTo]
 
-  #def initialize
-  #  @cluster = Cassandra.cluster(hosts: %w[137.112.104.137 137.112.104.136 137.112.104.138])
-  #  @stations = @cluster.connect("stations")
-  #end
+  def initialize
+    @cluster = Cassandra.cluster(hosts: %w[137.112.104.137 137.112.104.136 137.112.104.138])
+    @stations = @cluster.connect("stations")
+  end
 
-  def addToSchedule(arrivingAt, time, goingTo, price, procedure)
+  def addToSchedule(arrivingAt, time, goingTo, price)
     #seeIfExists = @stations.prepare('SELECT * From arrivals Where arrivingat = ? and time = ? and goingto = ? ALLOW FILTERING;')
     #addTrainTime = @stations.prepare('INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS')
     #duplicates = @stations.execute(seeIfExists, arguments: [arrivingAt, time, goingTo])
@@ -22,16 +22,16 @@ class ScheduleService
     query = 'INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS'
     arguments = [arrivingAt, time, goingTo, price]
     database = 'Cassandra'
-    Log.addToLog(database, query, arguments, procedure)
+    Log.addToLog(database, query, arguments)
   end
 
-  def editSchedule (oldArrivingAt, oldTime, oldGoingTo, newArrivingAt, newTime, newGoingTo, newPrice, procedure)
+  def editSchedule (oldArrivingAt, oldTime, oldGoingTo, newArrivingAt, newTime, newGoingTo, newPrice)
     #seeIfExists = @stations.prepare('SELECT * From arrivals Where arrivingat = ? and time = ? and goingto = ? LIMIT 1 ALLOW FILTERING;')
 
     #exists = @stations.execute(seeIfExists, arguments: [oldArrivingAt, oldTime, oldGoingTo])
     #if not exists.empty?
-    removeFromSchedule(oldArrivingAt, oldTime, oldGoingTo, procedure)
-    addToSchedule(newArrivingAt, newTime, newGoingTo, newPrice, procedure)
+    removeFromSchedule(oldArrivingAt, oldTime, oldGoingTo)
+    addToSchedule(newArrivingAt, newTime, newGoingTo, newPrice)
     #  return ""
     #else
     #  return "This station, time, and destination combination does not exist";
@@ -39,7 +39,7 @@ class ScheduleService
 
   end
 
-  def removeFromSchedule(arrivingAt, time, goingTo, procedure)
+  def removeFromSchedule(arrivingAt, time, goingTo)
     #seeIfExists = @stations.prepare('SELECT * From arrivals Where arrivingat = ? and time = ? and goingto = ? LIMIT 1 ALLOW FILTERING;')
     #removeTrainTime = @stations.prepare('Delete From arrivals Where arrivingat = ? and time = ? and goingto = ? IF EXISTS')
 
@@ -54,33 +54,33 @@ class ScheduleService
     arguments = [arrivingAt, time, goingTo]
     database = 'Cassandra'
     # log = Log.new()
-    Log.addToLog(database, query, arguments, procedure)
+    Log.addToLog(database, query, arguments)
   end
 
-  def getSchedule(procedure)
-    # search = @stations.prepare("Select * From arrivals")
-    #results = @stations.execute(search)
-    #return results
-    query = 'Select * From arrivals'
-    arguments = Array.new()
-    database = 'Cassandra'
+  def getSchedule
+    search = @stations.prepare("Select * From arrivals")
+    results = @stations.execute(search)
+    return results
+    # query = 'Select * From arrivals'
+    #arguments = Array.new()
+    #database = 'Cassandra'
     #log = Log.new()
-    Log.addToLog(database, query, arguments, procedure)
+    #Log.addToLog(database, query, arguments)
   end
 
-  def get_row(arrivingAt, time, goingTo, procedure)
-    #search = @stations.prepare("Select * From arrivals Where arrivingat = ? and time = ? and goingto = ? ALLOW FILTERING;")
-    #results = @stations.execute(search, arguments: [arrivingAt, time, goingTo])
-    #return results;
-    query = "Select * From arrivals Where arrivingat = ? and time = ? and goingto = ? ALLOW FILTERING;"
-    arguments = [arrivingAt, time, goingTo]
-    database = 'Cassandra'
+  def get_row(arrivingAt, time, goingTo)
+    search = @stations.prepare("Select * From arrivals Where arrivingat = ? and time = ? and goingto = ? ALLOW FILTERING;")
+    results = @stations.execute(search, arguments: [arrivingAt, time, goingTo])
+    return results;
+      # query = "Select * From arrivals Where arrivingat = ? and time = ? and goingto = ? ALLOW FILTERING;"
+    #arguments = [arrivingAt, time, goingTo]
+    #database = 'Cassandra'
     #log = Log.new()
-    Log.addToLog(database, query, arguments, procedure)
+    #Log.addToLog(database, query, arguments)
   end
 
 
-  def filter (arrivingAt, time, goingTo, procedure)
+  def filter (arrivingAt, time, goingTo)
     query = "Select * From arrivals"
     isFirstElement = true;
 
@@ -111,15 +111,16 @@ class ScheduleService
       end
     end
 
-    # search = @stations.prepare(query + " allow filtering;")
-    #results = @stations.execute(search)
+     search = @stations.prepare(query + " allow filtering;")
+    results = @stations.execute(search)
+    return results
 
     #return results
-    query = query + " allow filtering;"
-    arguments = Array.new()
-    database = 'Cassandra'
+    #query = query + " allow filtering;"
+    #arguments = Array.new()
+    #database = 'Cassandra'
     #log = Log.new()
-    Log.addToLog(database, query, arguments, procedure)
+    #Log.addToLog(database, query, arguments)
 
   end
 
