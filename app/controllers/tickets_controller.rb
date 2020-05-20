@@ -3,7 +3,7 @@ class TicketsController < ApplicationController
   def new
     service = ScheduleService.new
     @ticket = Ticket.new
-    service.get_row(params["arrivingat"], params["time"], params["goingto"],Proc.new { |x| setSchedule(x) })
+    @schedule = service.get_row(params["arrivingat"], params["time"], params["goingto"])
     @schedule.each do |row|
         @price = row["price"]
         @going_to = row["goingto"]
@@ -84,7 +84,4 @@ class TicketsController < ApplicationController
       params.require(:ticket).permit(:origin, :destination, :quantity, :price, :first_class, :time, :user)
     end
 
-  def setSchedule(schedule)
-    @schedule = schedule
-  end
 end
