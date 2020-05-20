@@ -7,6 +7,7 @@
 
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= javascript_pack_tag 'application' %>
+    <script src="https://rawgit.com/neo4j-contrib/neovis.js/master/dist/neovis.js"></script>
   </head>
 
   <body>
@@ -21,7 +22,7 @@
           <%= link_to "Home", root_path, class: "nav-link"%>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Destinations</a>
+          <%= link_to "Destinations", destinations_path, class: "nav-link" %>
         </li>
         <li class="nav-item <%= "active" if controller_name == 'schedules' %> ">
           <%= link_to "Schedule", schedules_path, class: "nav-link"%>
