@@ -1,4 +1,5 @@
 require 'cassandra'
+require 'neo4j/core/cypher_session/adaptors/http'
 
 class ScheduleService
 
@@ -9,62 +10,33 @@ class ScheduleService
       @cluster = Cassandra.cluster(hosts: %w[137.112.104.137 137.112.104.136 137.112.104.138], connect_timeout: 1)
       @stations = @cluster.connect("stations")
       http_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new('http://neo4j:Onrails433@137.112.104.139:7474')
-      neo4j_session = Neo4j::Core::CypherSession.new(http_adaptor)
+      @neo4j_session = Neo4j::Core::CypherSession.new(http_adaptor)
+      @isConnected = http_adaptor.connected?
     rescue Cassandra::Errors::NoHostsAvailable, Neo4j::Core::CypherError::NoHostsAvailable
-
     end
   end
 
   def addToSchedule(arrivingAt, time, goingTo, price)
-    #seeIfExists = @stations.prepare('SELECT * From arrivals Where arrivingat = ? and time = ? and goingto = ? ALLOW FILTERING;')
-    #addTrainTime = @stations.prepare('INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS')
-    #duplicates = @stations.execute(seeIfExists, arguments: [arrivingAt, time, goingTo])
-    # if not duplicates.empty?
-    #  return "This station, time, and destination combination already exists";
-    #else
-    #  @stations.execute(addTrainTime, arguments: [arrivingAt, time, goingTo, price])
-    # return ""
-    # end
     cassandraQuery = 'INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS'
     cassandraArguments = [arrivingAt, time, goingTo, price]
     cassandraDatabase = 'Cassandra'
     Log.addToLog(cassandraDatabase, cassandraQuery, cassandraArguments)
 
-    neoQuery = 'Merge(arrivingAt:Station {city:?}) Merge(goingTo:Station {city:?}) MERGE (arrivingAt)-[:track {operational:true}]->(goingTo)'
+    neoQuery = "Merge(arrivingAt:Station {city:'#{arrivingAt}'}) Merge(goingTo:Station {city:'#{arrivingAt}'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)"
     neoArguments = [arrivingAt, goingTo]
     neoDatabase = 'Neo4j'
-    Log.addToLog(neoDatabase, neoQuery, neoArguments)
+    Log.addToLog(neoDatabase, neoQuery,neoArguments)
   end
 
   def editSchedule (oldArrivingAt, oldTime, oldGoingTo, newArrivingAt, newTime, newGoingTo, newPrice)
-    #seeIfExists = @stations.prepare('SELECT * From arrivals Where arrivingat = ? and time = ? and goingto = ? LIMIT 1 ALLOW FILTERING;')
-
-    #exists = @stations.execute(seeIfExists, arguments: [oldArrivingAt, oldTime, oldGoingTo])
-    #if not exists.empty?
     removeFromSchedule(oldArrivingAt, oldTime, oldGoingTo)
     addToSchedule(newArrivingAt, newTime, newGoingTo, newPrice)
-    #  return ""
-    #else
-    #  return "This station, time, and destination combination does not exist";
-    #end
-
   end
 
   def removeFromSchedule(arrivingAt, time, goingTo)
-    #seeIfExists = @stations.prepare('SELECT * From arrivals Where arrivingat = ? and time = ? and goingto = ? LIMIT 1 ALLOW FILTERING;')
-    #removeTrainTime = @stations.prepare('Delete From arrivals Where arrivingat = ? and time = ? and goingto = ? IF EXISTS')
-
-    #exists = @stations.execute(seeIfExists, arguments: [arrivingAt, time, goingTo])
-    #if not exists.empty?
-    #  @stations.execute(removeTrainTime, arguments: [arrivingAt, time, goingTo])
-    #  return ""
-    #else
-    #  return "This station, time, and destination combination does not exist";
-    #end
     query = 'Delete From arrivals Where arrivingat = ? and time = ? and goingto = ? IF EXISTS'
     arguments = [arrivingAt, time, goingTo]
     database = 'Cassandra'
-    # log = Log.new()
     Log.addToLog(database, query, arguments)
   end
 
@@ -74,17 +46,22 @@ class ScheduleService
     cassandraDatabase = 'Cassandra'
     Log.addToLog(cassandraQuery, cassandraArguments, cassandraDatabase)
 
-    neoQuery = 'MATCH (n:Station { name: ? }) Detach DELETE n'
+    neoQuery = "MATCH (n:Station { name: '#{station}' }) Detach DELETE n"
     neoArguments = [station]
     neoDatabase = 'Neo4j'
     Log.addToLog(neoDatabase, neoQuery, neoArguments)
   end
 
   def getStations
-    neoQuery = 'Match(n:Station) return n.city'
-    neoArguments = []
-    neoDatabase = 'Neo4j'
-    Log.addToLog(neoDatabase, neoQuery, neoArguments)
+    if @isConnected
+      neoQuery = 'Match(n:Station) return n.city'
+      #neoArguments = []
+      #neoDatabase = 'Neo4j'
+      results = @neo4j_session.query(neoQuery)
+      return results
+    else
+      return nil
+    end
   end
 
   def getSchedule
@@ -99,9 +76,9 @@ class ScheduleService
 
   def setTrackOperational(arrivingAt, goingTo, isOperational)
     if isOperational
-      neoQuery = 'Match (arrivingAt:Station {city:?})-[t:track]->(goingTo:Station {city:?}) Set t.operational = true'
+      neoQuery = "Match (arrivingAt:Station {city:'#{arrivingAt}'})-[t:track]->(goingTo:Station {city:'#{goingTo}'}) Set t.operational = 'true'"
     else
-      neoQuery = 'Match (arrivingAt:Station {city:?})-[t:track]->(goingTo:Station {city:?}) Set t.operational = false'
+      neoQuery = "Match (arrivingAt:Station {city:'#{arrivingAt}'})-[t:track]->(goingTo:Station {city:'#{goingTo}'}) Set t.operational = 'false'"
     end
     neoArguments = [arrivingAt, goingTo]
     neoDatabase = 'Neo4j'
@@ -109,31 +86,40 @@ class ScheduleService
   end
 
   def getAllRoutes
-    neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city Return Distinct n.city,m.city,t.operational'
-    neoArguments = []
-    neoDatabase = 'Neo4j'
-    Log.addToLog(neoDatabase, neoQuery, neoArguments)
+    if @isConnected
+      neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city Return Distinct n.city,m.city,t.operational'
+      #neoArguments = []
+      #neoDatabase = 'Neo4j'
+      #Log.addToLog(neoDatabase, neoQuery, neoArguments)
+      results = @neo4j_session.query(neoQuery)
+      return results
+    else
+      return nil
+    end
   end
 
   def filterRoutes(arrivingAt, goingTo)
-    if arrivingAt == "" and goingTo == ""
-      return getAllRoutes
-    elsif arrivingAt == ""
-      neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and n.city = ? Return Distinct n.city,m.city,t.operational'
-      neoArguments = [arrivingAt]
-    elsif goingTo == ""
-      neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and m.city = ? Return Distinct n.city,m.city,t.operational'
-      neoArguments = [goingTo]
+    if @isConnected
+      if arrivingAt == "" and goingTo == ""
+        return getAllRoutes
+      elsif arrivingAt == ""
+        neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and n.city = ? Return Distinct n.city,m.city,t.operational'
+        neoArguments = [arrivingAt]
+      elsif goingTo == ""
+        neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and m.city = ? Return Distinct n.city,m.city,t.operational'
+        neoArguments = [goingTo]
+      else
+        neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and n.city = ? and m.city = ? Return Distinct n.city,m.city,t.operational'
+        neoArguments = [arrivingAt, goingTo]
+      end
+
+      #neoDatabase = 'Neo4j'
+      results = @neo4j_session.query(neoQuery, arguments: neoArguments)
+      return results
     else
-      neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and n.city = ? and m.city = ? Return Distinct n.city,m.city,t.operational'
-      neoArguments = [arrivingAt, goingTo]
+      return nil
     end
-
-    neoDatabase = 'Neo4j'
-    Log.addToLog(neoDatabase, neoQuery, neoArguments)
   end
-
-
 
 
   def get_row(arrivingAt, time, goingTo)
@@ -143,12 +129,6 @@ class ScheduleService
       search = @stations.prepare("Select * From arrivals Where arrivingat = ? and time = ? and goingto = ? ALLOW FILTERING;")
       results = @stations.execute(search, arguments: [arrivingAt, time, goingTo])
       return results;
-      # query = "Select * From arrivals Where arrivingat = ? and time = ? and goingto = ? ALLOW FILTERING;"
-      #arguments = [arrivingAt, time, goingTo]
-      #database = 'Cassandra'
-      #log = Log.new()
-      #Log.addToLog(database, query, arguments)
-      # end
     end
   end
 
@@ -190,14 +170,16 @@ class ScheduleService
       search = @stations.prepare(query + " allow filtering;")
       results = @stations.execute(search)
       return results
+    end
+  end
 
-      #return results
-      #query = query + " allow filtering;"
-      #arguments = Array.new()
-      #database = 'Cassandra'
-      #log = Log.new()
-      #Log.addToLog(database, query, arguments)
-
+  def findPath(arrivingAt, goingTo)
+    if @isConnected
+      neoQuery = "Match p = shortestPath((arrivingAt:Station {city: '#{arrivingAt}'})-[t:track*]-(goingTo:Station {city: '#{goingTo}' }))  WHERE ALL (t IN relationships(p) WHERE t.operational='true') return p"
+      results = @neo4j_session.query(neoQuery)
+      return results
+    else
+      return nil
     end
   end
 end

@@ -100,7 +100,7 @@ def self.neo4jQuery(query, arguments)
     http_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new('http://neo4j:Onrails433@137.112.104.139:7474')
     neo4j_session = Neo4j::Core::CypherSession.new(http_adaptor)
     connected = http_adaptor.connected?
-    results = neo4j_session.query(query, arguments: arguments)
+    results = neo4j_session.query(query)
     if not connected
       return "error"
     else
