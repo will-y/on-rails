@@ -25,7 +25,7 @@ class ScheduleService
     neoQuery = "Merge(arrivingAt:Station {city:'#{arrivingAt}'}) Merge(goingTo:Station {city:'#{arrivingAt}'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)"
     neoArguments = [arrivingAt, goingTo]
     neoDatabase = 'Neo4j'
-    Log.addToLog(neoDatabase, neoQuery,neoArguments)
+    Log.addToLog(neoDatabase, neoQuery, neoArguments)
   end
 
   def editSchedule (oldArrivingAt, oldTime, oldGoingTo, newArrivingAt, newTime, newGoingTo, newPrice)
@@ -53,13 +53,13 @@ class ScheduleService
   end
 
   def getStations
-    if @isConnected
-      neoQuery = 'Match(n:Station) return n.city'
+    begin
+      neoQuery = 'Match(n:Station) return n.city ORDER BY n.city'
       #neoArguments = []
       #neoDatabase = 'Neo4j'
       results = @neo4j_session.query(neoQuery)
       return results
-    else
+    rescue Neo4j::Core::CypherError::NoHostsAvailable
       return nil
     end
   end
@@ -86,14 +86,14 @@ class ScheduleService
   end
 
   def getAllRoutes
-    if @isConnected
-      neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city Return Distinct n.city,m.city,t.operational'
+    begin
+      neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
       #neoArguments = []
       #neoDatabase = 'Neo4j'
       #Log.addToLog(neoDatabase, neoQuery, neoArguments)
       results = @neo4j_session.query(neoQuery)
       return results
-    else
+    rescue Neo4j::Core::CypherError::NoHostsAvailable
       return nil
     end
   end
@@ -103,13 +103,13 @@ class ScheduleService
       if arrivingAt == "" and goingTo == ""
         return getAllRoutes
       elsif arrivingAt == ""
-        neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and n.city = ? Return Distinct n.city,m.city,t.operational'
+        neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and n.city = ? Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
         neoArguments = [arrivingAt]
       elsif goingTo == ""
-        neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and m.city = ? Return Distinct n.city,m.city,t.operational'
+        neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and m.city = ? Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
         neoArguments = [goingTo]
       else
-        neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and n.city = ? and m.city = ? Return Distinct n.city,m.city,t.operational'
+        neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and n.city = ? and m.city = ? Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
         neoArguments = [arrivingAt, goingTo]
       end
 
