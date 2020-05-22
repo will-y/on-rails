@@ -11,9 +11,9 @@ class ApplicationController < ActionController::Base
 
   def set_current_user
     @current_user = session[:user_id] rescue nil
-    puts("````````````````````````````````````````````````")
-    puts("Application controller id")
-    puts(session[:user_id])
-    puts(@current_user)
+
+
+    puts "!!!!!!!!!!!!!!!!!!!!!"
+    puts @current_user
   end
 end

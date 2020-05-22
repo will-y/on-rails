@@ -63,6 +63,7 @@ class Log
           query = line[1]
           arguments = line[2].split(",")
           arguments = arguments.collect {|a| a.starts_with?("DECIMAL_") ? a[8..-1].to_d : a}
+          puts arguments
 
           if databaseName == "Cassandra"
             result = self.cassandraQuery(query, arguments)

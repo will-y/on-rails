@@ -72,7 +72,7 @@ class TicketsController < ApplicationController
 
     @ticket.update(quantity: params[:ticket][:quantity], first_class: params[:ticket][:first_class], price: @price)
 
-    redirect_to user_path(@current_user)
+    redirect_to user_path(@current_user["$oid"])
   end
 
   def show

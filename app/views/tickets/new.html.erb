@@ -2,8 +2,9 @@
   <%= link_to "Back", schedules_path, class: "btn btn-outline-primary mt-2" %>
   <h1 class="text-center">Buy Ticket</h1>
   <h2 class="text-center"><b><%= params["arrivingat"] %></b> to <b><%= @going_to %></b></h2>
-  <h3 class="text-center"><b><%= params["time"] %></b> </h3>
-  <h3 class="text-center">$<span id="price"><%= @price %></span><span id="price_1st" style="display: none"><%= @price*2 %></span></h3>
+  <h3 class="text-center"><b><%= params["time"][0] %></b> </h3>
+  <h3 class="text-center">$<%= @price %> / 1 coach ticket*</h3>
+  <h6 class="text-center">* First class tickets are 2X price</h6>
   <div class="form-row">
     <div class="col form-group">
       <label>First Name</label>
@@ -163,7 +164,7 @@
 
   <%= form_with(model: @ticket, local: true, method: "post", url: tickets_path) do |f| %>
     <div class="form-check mb-2">
-      <%= f.check_box(:first_class, checked_value: true, unchecked_value: false, class: "form-check-input", id: "firstClass")%>
+      <%= f.check_box(:first_class, checked_value: true, unchecked_value: false, class: "form-check-input")%>
       <label class="form-check-label" for="firstClass">First Class</label>
     </div>
 
@@ -199,12 +200,3 @@
     <%= f.submit("Buy Now", class: "btn btn-outline-primary") %>
   <% end %>
   </div>
-
-  <script type="application/javascript">
-      $(document).ready(function () {
-          $('#firstClass').change(function () {
-              $('#price').toggle()
-              $('#price_1st').toggle()
-          })
-      });
-  </script>

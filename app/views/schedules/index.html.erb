@@ -3,9 +3,9 @@
   <%= form_with(url: schedules_path, local: true, method: "get", class: "form-inline filter-form pt-3  pb-3 pl-3") do |f| %>
     <%#= f.text_field(:origin, class: "form-control mr-1", placeholder: "Origin") %>
     <%#= f.text_field(:destination, class: "form-control mr-1", placeholder: "Destination") %>
-    <%= select(:origin, "", @stations.collect {|s| [ s["n.city"]] }, { include_blank: false}, {class: "form-control"}) %>
-    <%= select(:destination, "", @stations.collect {|s| [ s["n.city"]] }, { include_blank: false}, {class: "form-control"}) %>
-    <%= f.text_field(:time, class: "form-control mr-1", placeholder: "Time") %>
+    <%= select(:origin, "", @stations.collect {|s| s["n.city"] }, { include_blank: true}, {class: "form-control"}) %>
+    <%= select(:destination, "", @stations.collect {|s| s["n.city"] }, { include_blank: true}, {class: "form-control"}) %>
+    <%= hidden_field(:time, value: "") %>
     <%= f.submit("Filter", class: "btn btn-outline-success") %>
     <%= link_to "Reset", schedules_path, class: "ml-4 btn btn-outline-primary" %>
   <% end %>

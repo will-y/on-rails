@@ -1,12 +1,12 @@
 <div class="container">
-
+  <h3 class="text-center mt-2 mb-2">Add/Delete Tracks</h3>
   <%= form_with(url: schedules_path, local: true, method: "get", class: "form-inline filter-form mt-3 pt-3  pb-3 pl-3") do |f| %>
     <div class="row w-100">
       <div class="col-2">
-        <%= select(:origin, "", @stations.collect {|s| [ s["n.city"]] }, { include_blank: false }, {class: "form-control w-100"}) %>
+        <%= select(:origin, "", @stations.collect {|s| s["n.city"] }, { include_blank: false }, {class: "form-control w-100"}) %>
       </div>
       <div class="col-2">
-        <%= select(:destination, "", @stations.collect {|s| [ s["n.city"]] }, { include_blank: false}, {class: "form-control w-100"}) %>
+        <%= select(:destination, "", @stations.collect {|s| s["n.city"] }, { include_blank: false}, {class: "form-control w-100"}) %>
       </div>
       <div class="col-2">
         <%= time_select(:time, "", {}, {class: "form-control"}) %>
