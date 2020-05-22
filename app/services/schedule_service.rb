@@ -66,25 +66,31 @@ class ScheduleService
   end
 
   def formatResult(results)
+
     formattedResults = Array.new()
     currentArrivingAt = results.first()["arrivingat"]
     currentGoingTo = results.first()["goingto"]
     currentTimeArray = Array.new()
+
     results.each { |row|
       if row["arrivingat"] == currentArrivingAt
+
         if row["goingto"] == currentGoingTo
           currentTimeArray.push(row["time"])
+
         else
-          formattedResultsRow = [row["arrivingat"], row["goingto"], currentTimeArray]
+          formattedResultsRow = [currentArrivingAt, currentGoingTo, currentTimeArray]
           formattedResults.push(formattedResultsRow)
           currentGoingTo = row["goingto"]
           currentTimeArray = Array.new()
           currentTimeArray.push(row["time"])
         end
+
       else
         currentArrivingAt = row["arrivingat"]
       end
     }
+
     return formattedResults
   end
 
