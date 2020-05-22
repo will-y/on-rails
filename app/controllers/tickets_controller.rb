@@ -25,14 +25,12 @@ class TicketsController < ApplicationController
     #@ticket.save
     #@current_user.save
     ticket_params_temp = ticket_params
-    puts( ticket_params_temp)
     @price = ticket_params_temp['price'].to_f * ticket_params_temp['quantity'].to_i
     if ticket_params_temp['first_class'] == '1'
       @price = @price * 2
     end
     @price = @price.round(2)
     ticket_params_temp['price'] = @price
-    puts( @price)
     User.find(@current_user).tickets.create(ticket_params_temp)
     redirect_to schedules_path
   end
