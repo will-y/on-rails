@@ -123,6 +123,8 @@ class Log
     rescue Neo4j::Core::CypherError::NoHostsAvailable
       return "error"
     end
+  rescue Neo4j::Core::CypherSession::ConnectionFailedError
+    return "error"
   end
 end
 
