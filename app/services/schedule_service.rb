@@ -12,7 +12,7 @@ class ScheduleService
       http_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new('http://neo4j:Onrails433@137.112.104.139:7474')
       @neo4j_session = Neo4j::Core::CypherSession.new(http_adaptor)
       @isConnected = http_adaptor.connected?
-    rescue Cassandra::Errors::NoHostsAvailable, Neo4j::Core::CypherError::NoHostsAvailable
+    rescue Cassandra::Errors::NoHostsAvailable, Neo4j::Core::CypherSession::ConnectionFailedError
     end
   end
 
@@ -22,7 +22,7 @@ class ScheduleService
     cassandraDatabase = 'Cassandra'
     Log.addToLog(cassandraDatabase, cassandraQuery, cassandraArguments)
 
-    neoQuery = "Merge(arrivingAt:Station {city:'#{arrivingAt}'}) Merge(goingTo:Station {city:'#{arrivingAt}'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)"
+    neoQuery = "Merge(arrivingAt:Station {city:'#{arrivingAt}'}) Merge(goingTo:Station {city:'#{goingTo}'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)"
     neoArguments = [arrivingAt, goingTo]
     neoDatabase = 'Neo4j'
     Log.addToLog(neoDatabase, neoQuery, neoArguments)
@@ -52,6 +52,7 @@ class ScheduleService
     Log.addToLog(neoDatabase, neoQuery, neoArguments)
   end
 
+
   def getStations
     begin
       neoQuery = 'Match(n:Station) return n.city ORDER BY n.city'
@@ -59,9 +60,32 @@ class ScheduleService
       #neoDatabase = 'Neo4j'
       results = @neo4j_session.query(neoQuery)
       return results
-    rescue Neo4j::Core::CypherError::NoHostsAvailable
+    rescue Neo4j::Core::CypherSession::ConnectionFailedError
       return nil
     end
+  end
+
+  def formatResult(results)
+    formattedResults = Array.new()
+    currentArrivingAt = results.first()["arrivingat"]
+    currentGoingTo = results.first()["goingto"]
+    currentTimeArray = Array.new()
+    results.each { |row|
+      if row["arrivingat"] == currentArrivingAt
+        if row["goingto"] == currentGoingTo
+          currentTimeArray.push(row["time"])
+        else
+          formattedResultsRow = [row["arrivingat"], row["goingto"], currentTimeArray]
+          formattedResults.push(formattedResultsRow)
+          currentGoingTo = row["goingto"]
+          currentTimeArray = Array.new()
+          currentTimeArray.push(row["time"])
+        end
+      else
+        currentArrivingAt = row["arrivingat"]
+      end
+    }
+    return formattedResults
   end
 
   def getSchedule
@@ -70,7 +94,8 @@ class ScheduleService
     else
       search = @stations.prepare("Select * From arrivals")
       results = @stations.execute(search)
-      return results
+      formattedResults = formatResult(results)
+      return formattedResults
     end
   end
 
@@ -93,7 +118,7 @@ class ScheduleService
       #Log.addToLog(neoDatabase, neoQuery, neoArguments)
       results = @neo4j_session.query(neoQuery)
       return results
-    rescue Neo4j::Core::CypherError::NoHostsAvailable
+    rescue Neo4j::Core::CypherSession::ConnectionFailedError
       return nil
     end
   end

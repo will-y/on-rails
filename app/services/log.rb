@@ -106,7 +106,7 @@ def self.neo4jQuery(query, arguments)
     else
       return results;
     end
-  rescue Neo4j::Core::CypherError::NoHostsAvailable
+  rescue Neo4j::Core::CypherSession::ConnectionFailedError
     return "error"
   end
 end
