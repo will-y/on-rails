@@ -38,7 +38,7 @@ class TicketsController < ApplicationController
   end
 
   def edit
-    @ticket = Ticket.where(user_id: @current_user, _id: params[:id]).first
+    @ticket = Ticket.where(user_id: @current_user["$oid"], _id: params[:id]).first
     @user = User.find(@current_user)
     @price = @ticket.price
     @destination = @ticket.destination
@@ -80,8 +80,8 @@ class TicketsController < ApplicationController
   end
 
   def destroy
-    @ticket = Ticket.where(user_id: @current_user, _id: params[:id]).delete
-    redirect_to user_path(@current_user), notice: "Ticket Deleted"
+    @ticket = Ticket.where(user_id: @current_user["$oid"], _id: params[:id]).delete
+    redirect_to user_path(id: @current_user["$oid"]), notice: "Ticket Deleted"
   end
 
   private

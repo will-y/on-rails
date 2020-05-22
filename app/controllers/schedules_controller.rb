@@ -4,14 +4,15 @@ class SchedulesController < ApplicationController
     method = params["commit"]
     service = ScheduleService.new
     @schedule = service.getSchedule()
+    @stations = service.getStations
 
     case method
     when "Filter"
       @schedule = nil
-      if (!params[:origin] || !params[:time] || !params[:destination])
+      if (!params[:origin][0] || !params[:destination][0])
         @schedule = service.getSchedule()
       else
-        @schedule = service.filter(params[:origin], params[:time], params[:destination])
+        @schedule = service.filter(params[:origin][0], params[:time], params[:destination][0])
       end
     when "Create"
       puts params
@@ -26,7 +27,6 @@ class SchedulesController < ApplicationController
   def new
     service = ScheduleService.new
     @stations = service.getStations
-    puts @stations
   end
 
 end
