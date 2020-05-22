@@ -1,0 +1,28 @@
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_123
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_123
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_123
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_123
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_123
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_123
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_123
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_123
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_123
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_123
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_123
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_123
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine
+Cassandra#INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS#Aberdeen,04:14,Alpine,DECIMAL_123
+Neo4j#Merge(arrivingAt:Station {city:'Aberdeen'}) Merge(goingTo:Station {city:'Alpine'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)#Aberdeen,Alpine

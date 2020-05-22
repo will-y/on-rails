@@ -3,8 +3,13 @@ class TicketsController < ApplicationController
   def new
     service = ScheduleService.new
     @ticket = Ticket.new
-    @schedule = service.get_row(params["arrivingat"], params["time"], params["goingto"])
+    puts params["time"][0]
+    puts params["arrivingat"]
+    puts params["goingto"]
+    @schedule = service.get_row(params["arrivingat"], params["time"][0], params["goingto"])
     @schedule.each do |row|
+        puts "!!!!!!!!!!!!!!!!!!1"
+        puts row
         @price = row["price"]
         @going_to = row["goingto"]
     end

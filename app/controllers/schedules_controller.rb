@@ -3,6 +3,7 @@ class SchedulesController < ApplicationController
   def index
     method = params["commit"]
     service = ScheduleService.new
+    @schedule = service.getSchedule()
 
     case method
     when "Filter"

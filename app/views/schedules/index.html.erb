@@ -18,12 +18,18 @@
     <tbody>
     <% if !@schedule.nil? %>
       <% @schedule.each do |row| %>
-        <tr>
-          <td><%= row["arrivingat"] %></td>
-          <td><%= row["goingto"] %></td>
-          <td><%= row["time"].to_s %></td>
-          <td> <%= link_to "Buy Tickets", new_ticket_path(arrivingat: row["arrivingat"], goingto: row["goingto"], time: row["time"]), class: "btn btn-outline-primary" %></td>
-        </tr>
+        <%= form_with(url: new_ticket_path, local: true, method: "get", class: "form-inline filter-form mt-3 pt-3  pb-3 pl-3") do |f| %>
+          <%= f.hidden_field(:arrivingat, class: "form-control", required: true, value: row[0]) %>
+          <%= f.hidden_field(:goingto, class: "form-control", required: true, value: row[1]) %>
+          <tr>
+            <td><%= row[0] %></td>
+            <td><%= row[1] %></td>
+            <td>
+              <%= select(:time, "", row[2], { include_blank: false}, {class: "form-control"}) %>
+            </td>
+            <td><%= f.submit("Buy Tickets", class: "btn btn-outline-primary") %></td>
+          </tr>
+        <% end %>
       <% end %>
     <% end %>
 
