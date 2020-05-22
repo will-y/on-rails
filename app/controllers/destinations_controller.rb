@@ -5,7 +5,9 @@ class DestinationsController < ApplicationController
 
     case method
     when "Create"
-      service
+      service.addStation(params["station"])
+    when "Delete"
+      service.deleteStation(params[:station][0])
     end
   end
 

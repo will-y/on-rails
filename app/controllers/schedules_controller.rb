@@ -43,4 +43,16 @@ class SchedulesController < ApplicationController
     @stations = service.getStations
   end
 
+  def edit
+    puts params
+    service = ScheduleService.new
+    @routes = service.getAllRoutes
+
+    if params["commit"] == "Edit"
+      service.setTrackOperational(params[:origin], params[:destination], params[:active])
+      redirect_to edit_schedule_path(1)
+    end
+
+  end
+
 end

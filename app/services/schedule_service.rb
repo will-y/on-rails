@@ -48,12 +48,14 @@ class ScheduleService
   end
 
   def deleteStation(station)
-    cassandraQuery = 'Delete From arrivals Where arrivingat = ? or goingTo = ? IF EXISTS'
-    cassandraArguments = [station, station]
+    cassandraQuery = 'Delete From arrivals Where arrivingat = ? IF EXISTS'
+    cassandraArguments = [station]
     cassandraDatabase = 'Cassandra'
-    Log.addToLog(cassandraQuery, cassandraArguments, cassandraDatabase)
+    Log.addToLog(cassandraDatabase, cassandraQuery, cassandraArguments)
+    cassandraQuery = 'Delete From arrivals Where goingto = ? IF EXISTS'
+    Log.addToLog(cassandraDatabase, cassandraQuery, cassandraArguments)
 
-    neoQuery = "MATCH (n:Station { name: '#{station}' }) Detach DELETE n"
+    neoQuery = "MATCH (n:Station { city: '#{station}' }) DETACH DELETE n"
     neoArguments = [station]
     neoDatabase = 'Neo4j'
     Log.addToLog(neoDatabase, neoQuery, neoArguments)
@@ -114,7 +116,8 @@ class ScheduleService
     end
 
     def setTrackOperational(arrivingAt, goingTo, isOperational)
-      if isOperational
+      puts isOperational
+      if isOperational != 'true'
         neoQuery = "Match (arrivingAt:Station {city:'#{arrivingAt}'})-[t:track]->(goingTo:Station {city:'#{goingTo}'}) Set t.operational = 'true'"
       else
         neoQuery = "Match (arrivingAt:Station {city:'#{arrivingAt}'})-[t:track]->(goingTo:Station {city:'#{goingTo}'}) Set t.operational = 'false'"

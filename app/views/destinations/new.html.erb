@@ -1,16 +1,5 @@
 <div class="container">
-  <h3 class="text-center mb-2 mt-2">Add/Delete Stations</h3>
-  <%= form_with(url: destinations_path, local: true, method: "get", class: "form-inline filter-form mt-3 pt-3  pb-3 pl-3") do |f| %>
-    <div class="row w-100">
-      <div class="col-9">
-        <%= select(:station, "", @stations.collect {|s| s["n.city"] }, { include_blank: false }, {class: "form-control w-100"}) %>
-      </div>
-      <div class="col-3">
-        <%= f.submit("Delete", method: "Destory", class: "btn btn-outline-danger w-100") %>
-      </div>
-    </div>
-
-  <% end %>
+  <h3 class="text-center mb-2 mt-2">Add Stations</h3>
 
   <%= form_with(url: destinations_path, local: true, method: "get", class: "form-inline filter-form mt-3 pt-3  pb-3 pl-3") do |f| %>
     <div class="row w-100">

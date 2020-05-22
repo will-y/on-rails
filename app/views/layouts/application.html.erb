@@ -27,7 +27,7 @@
           <%= link_to "Schedule", schedules_path, class: "nav-link"%>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Train Status</a>
+          <%= link_to "Train Status", edit_schedule_path(1), class: "nav-link"%>
         </li>
         <% if @current_user %>
         <li class="nav-item">
