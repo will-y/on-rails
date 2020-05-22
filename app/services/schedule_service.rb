@@ -47,176 +47,176 @@ class ScheduleService
     Log.addToLog(neoDatabase, neoQuery, neoArguments)
   end
 
-def deleteStation(station)
-  cassandraQuery1 = 'Delete From arrivals Where arrivingat = ? IF EXISTS'
-  cassandraQuery2 = 'Delete From arrivals Where goingTo = ? IF EXISTS'
-  cassandraArguments = [station]
-  cassandraDatabase = 'Cassandra'
-  Log.addToLog(cassandraQuery1, cassandraArguments, cassandraDatabase)
-  Log.addToLog(cassandraQuery2, cassandraArguments, cassandraDatabase)
+  def deleteStation(station)
+    cassandraQuery1 = 'Delete From arrivals Where arrivingat = ? IF EXISTS'
+    cassandraQuery2 = 'Delete From arrivals Where goingTo = ? IF EXISTS'
+    cassandraArguments = [station]
+    cassandraDatabase = 'Cassandra'
+    Log.addToLog(cassandraQuery1, cassandraArguments, cassandraDatabase)
+    Log.addToLog(cassandraQuery2, cassandraArguments, cassandraDatabase)
 
 
-  neoQuery = "MATCH (n:Station { name: '#{station}' }) Detach DELETE n"
-  neoArguments = [station]
-  neoDatabase = 'Neo4j'
-  Log.addToLog(neoDatabase, neoQuery, neoArguments)
-end
-
-
-def getStations
-  begin
-    neoQuery = 'Match(n:Station) return n.city ORDER BY n.city'
-    #neoArguments = []
-    #neoDatabase = 'Neo4j'
-    results = @neo4j_session.query(neoQuery)
-    return results
-  rescue Neo4j::Core::CypherSession::ConnectionFailedError
-    return nil
+    neoQuery = "MATCH (n:Station { name: '#{station}' }) Detach DELETE n"
+    neoArguments = [station]
+    neoDatabase = 'Neo4j'
+    Log.addToLog(neoDatabase, neoQuery, neoArguments)
   end
-end
 
-def formatResult(results)
 
-  formattedResults = Array.new()
-  currentArrivingAt = results.first()["arrivingat"]
-  currentGoingTo = results.first()["goingto"]
-  currentTimeArray = Array.new()
-
-  results.each { |row|
-    if row["arrivingat"] == currentArrivingAt and row["goingto"] == currentGoingTo
-
-      currentTimeArray.push(row["time"])
-
-    else
-      formattedResultsRow = [currentArrivingAt, currentGoingTo, currentTimeArray]
-      formattedResults.push(formattedResultsRow)
-      currentGoingTo = row["goingto"]
-      currentArrivingAt = row['arrivingat']
-      currentTimeArray = Array.new()
-      currentTimeArray.push(row["time"])
+  def getStations
+    begin
+      neoQuery = 'Match(n:Station) return n.city ORDER BY n.city'
+      #neoArguments = []
+      #neoDatabase = 'Neo4j'
+      results = @neo4j_session.query(neoQuery)
+      return results
+    rescue Neo4j::Core::CypherSession::ConnectionFailedError
+      return nil
     end
-  }
-  return formattedResults
-end
+  end
 
+  def formatResult(results)
 
-def getSchedule
-  if @stations.nil?
-    return nil
-  else
-    search = @stations.prepare("Select * From arrivals")
-    results = @stations.execute(search)
-    formattedResults = formatResult(results)
+    formattedResults = Array.new()
+    currentArrivingAt = results.first()["arrivingat"]
+    currentGoingTo = results.first()["goingto"]
+    currentTimeArray = Array.new()
+
+    results.each { |row|
+      if row["arrivingat"] == currentArrivingAt and row["goingto"] == currentGoingTo
+
+        currentTimeArray.push(row["time"])
+
+      else
+        formattedResultsRow = [currentArrivingAt, currentGoingTo, currentTimeArray]
+        formattedResults.push(formattedResultsRow)
+        currentGoingTo = row["goingto"]
+        currentArrivingAt = row['arrivingat']
+        currentTimeArray = Array.new()
+        currentTimeArray.push(row["time"])
+      end
+    }
     return formattedResults
   end
-end
 
-def setTrackOperational(arrivingAt, goingTo, isOperational)
-  if isOperational
-    neoQuery = "Match (arrivingAt:Station {city:'#{arrivingAt}'})-[t:track]->(goingTo:Station {city:'#{goingTo}'}) Set t.operational = 'true'"
-  else
-    neoQuery = "Match (arrivingAt:Station {city:'#{arrivingAt}'})-[t:track]->(goingTo:Station {city:'#{goingTo}'}) Set t.operational = 'false'"
-  end
-  neoArguments = [arrivingAt, goingTo]
-  neoDatabase = 'Neo4j'
-  Log.addToLog(neoDatabase, neoQuery, neoArguments)
-end
 
-def getAllRoutes
-  begin
-    neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
-    #neoArguments = []
-    #neoDatabase = 'Neo4j'
-    #Log.addToLog(neoDatabase, neoQuery, neoArguments)
-    results = @neo4j_session.query(neoQuery)
-    return results
-  rescue Neo4j::Core::CypherSession::ConnectionFailedError
-    return nil
-  end
-end
-
-def filterRoutes(arrivingAt, goingTo)
-  if @isConnected
-    if arrivingAt == "" and goingTo == ""
-      return getAllRoutes
-    elsif arrivingAt == ""
-      neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and n.city = ? Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
-      neoArguments = [arrivingAt]
-    elsif goingTo == ""
-      neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and m.city = ? Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
-      neoArguments = [goingTo]
+  def getSchedule
+    if @stations.nil?
+      return nil
     else
-      neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and n.city = ? and m.city = ? Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
-      neoArguments = [arrivingAt, goingTo]
+      search = @stations.prepare("Select * From arrivals")
+      results = @stations.execute(search)
+      formattedResults = formatResult(results)
+      return formattedResults
     end
-
-    #neoDatabase = 'Neo4j'
-    results = @neo4j_session.query(neoQuery, arguments: neoArguments)
-    return results
-  else
-    return nil
   end
-end
 
-
-def get_row(arrivingAt, time, goingTo)
-  if @stations.nil?
-    return nil
-  else
-    search = @stations.prepare("Select * From arrivals Where arrivingat = ? and time = ? and goingto = ? ALLOW FILTERING;")
-    results = @stations.execute(search, arguments: [arrivingAt, time, goingTo])
-    return results;
+  def setTrackOperational(arrivingAt, goingTo, isOperational)
+    if isOperational
+      neoQuery = "Match (arrivingAt:Station {city:'#{arrivingAt}'})-[t:track]->(goingTo:Station {city:'#{goingTo}'}) Set t.operational = 'true'"
+    else
+      neoQuery = "Match (arrivingAt:Station {city:'#{arrivingAt}'})-[t:track]->(goingTo:Station {city:'#{goingTo}'}) Set t.operational = 'false'"
+    end
+    neoArguments = [arrivingAt, goingTo]
+    neoDatabase = 'Neo4j'
+    Log.addToLog(neoDatabase, neoQuery, neoArguments)
   end
-end
 
+  def getAllRoutes
+    begin
+      neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
+      #neoArguments = []
+      #neoDatabase = 'Neo4j'
+      #Log.addToLog(neoDatabase, neoQuery, neoArguments)
+      results = @neo4j_session.query(neoQuery)
+      return results
+    rescue Neo4j::Core::CypherSession::ConnectionFailedError
+      return nil
+    end
+  end
 
-def filter (arrivingAt, time, goingTo)
-  if @stations.nil?
-    return nil
-  else
-    query = "Select * From arrivals"
-    isFirstElement = true;
-
-    if arrivingAt != ''
-      if isFirstElement
-        query = query + " Where arrivingat = '" + arrivingAt + "'"
-        isFirstElement = false;
+  def filterRoutes(arrivingAt, goingTo)
+    if @isConnected
+      if arrivingAt == "" and goingTo == ""
+        return getAllRoutes
+      elsif arrivingAt == ""
+        neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and n.city = ? Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
+        neoArguments = [arrivingAt]
+      elsif goingTo == ""
+        neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and m.city = ? Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
+        neoArguments = [goingTo]
       else
-        query = query + " and arrivingat = '" + arrivingAt + "'"
+        neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city and n.city = ? and m.city = ? Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
+        neoArguments = [arrivingAt, goingTo]
       end
-    end
 
-    if time != ''
-      if isFirstElement
-        query = query + " Where time = '" + time + "'"
-        isFirstElement = false;
-      else
-        query = query + " and time = '" + time + "'"
-      end
+      #neoDatabase = 'Neo4j'
+      results = @neo4j_session.query(neoQuery, arguments: neoArguments)
+      return results
+    else
+      return nil
     end
-
-    if goingTo != ''
-      if isFirstElement
-        query = query + " Where goingto = '" + goingTo + "'"
-        isFirstElement = false;
-      else
-        query = query + " and goingto = '" + goingTo + "'"
-      end
-    end
-
-    search = @stations.prepare(query + " allow filtering;")
-    results = @stations.execute(search)
-    return results
   end
-end
 
-def findPath(arrivingAt, goingTo)
-  if @isConnected
-    neoQuery = "Match p = shortestPath((arrivingAt:Station {city: '#{arrivingAt}'})-[t:track*]-(goingTo:Station {city: '#{goingTo}' }))  WHERE ALL (t IN relationships(p) WHERE t.operational='true') return p"
-    results = @neo4j_session.query(neoQuery)
-    return results
-  else
-    return nil
+
+  def get_row(arrivingAt, time, goingTo)
+    if @stations.nil?
+      return nil
+    else
+      search = @stations.prepare("Select * From arrivals Where arrivingat = ? and time = ? and goingto = ? ALLOW FILTERING;")
+      results = @stations.execute(search, arguments: [arrivingAt, time, goingTo])
+      return results;
+    end
   end
-end
+
+
+  def filter (arrivingAt, time, goingTo)
+    if @stations.nil?
+      return nil
+    else
+      query = "Select * From arrivals"
+      isFirstElement = true;
+
+      if arrivingAt != ''
+        if isFirstElement
+          query = query + " Where arrivingat = '" + arrivingAt + "'"
+          isFirstElement = false;
+        else
+          query = query + " and arrivingat = '" + arrivingAt + "'"
+        end
+      end
+
+      if time != ''
+        if isFirstElement
+          query = query + " Where time = '" + time + "'"
+          isFirstElement = false;
+        else
+          query = query + " and time = '" + time + "'"
+        end
+      end
+
+      if goingTo != ''
+        if isFirstElement
+          query = query + " Where goingto = '" + goingTo + "'"
+          isFirstElement = false;
+        else
+          query = query + " and goingto = '" + goingTo + "'"
+        end
+      end
+
+      search = @stations.prepare(query + " allow filtering;")
+      results = @stations.execute(search)
+      return results
+    end
+  end
+
+  def findPath(arrivingAt, goingTo)
+    if @isConnected
+      neoQuery = "Match p = shortestPath((arrivingAt:Station {city: '#{arrivingAt}'})-[t:track*]-(goingTo:Station {city: '#{goingTo}' }))  WHERE ALL (t IN relationships(p) WHERE t.operational='true') return p"
+      results = @neo4j_session.query(neoQuery)
+      return results
+    else
+      return nil
+    end
+  end
 end
