@@ -1,7 +1,7 @@
 class User
   include Mongoid::Document
 
-  before_save :encrypt_password
+  before_save :encrypt_password, :validate_admin
 
   validates :username, presence: true
 

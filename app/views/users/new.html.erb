@@ -63,7 +63,7 @@
         </div>
         <div class="col-md-4">
           <label>State</label>
-          <%= f.select(:state, @states, {include_blank: true}, {class: "form-control"}) %>
+          <%= f.select(:state, @states, {include_blank: false}, {class: "form-control"}) %>
         </div>
         <div class="col-md-2">
           <%= f.label(:zip, "Zip") %>
