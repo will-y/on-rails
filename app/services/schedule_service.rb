@@ -48,10 +48,13 @@ class ScheduleService
   end
 
 def deleteStation(station)
-  cassandraQuery = 'Delete From arrivals Where arrivingat = ? or goingTo = ? IF EXISTS'
-  cassandraArguments = [station, station]
+  cassandraQuery1 = 'Delete From arrivals Where arrivingat = ? IF EXISTS'
+  cassandraQuery2 = 'Delete From arrivals Where goingTo = ? IF EXISTS'
+  cassandraArguments = [station]
   cassandraDatabase = 'Cassandra'
-  Log.addToLog(cassandraQuery, cassandraArguments, cassandraDatabase)
+  Log.addToLog(cassandraQuery1, cassandraArguments, cassandraDatabase)
+  Log.addToLog(cassandraQuery2, cassandraArguments, cassandraDatabase)
+
 
   neoQuery = "MATCH (n:Station { name: '#{station}' }) Detach DELETE n"
   neoArguments = [station]
