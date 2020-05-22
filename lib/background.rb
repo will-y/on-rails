@@ -1,4 +1,4 @@
 loop do
   Log.goThroughLog
-  sleep 10
+  sleep 1
 end

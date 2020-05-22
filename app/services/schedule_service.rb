@@ -48,15 +48,14 @@ class ScheduleService
   end
 
   def deleteStation(station)
-    cassandraQuery1 = 'Delete From arrivals Where arrivingat = ? IF EXISTS'
-    cassandraQuery2 = 'Delete From arrivals Where goingTo = ? IF EXISTS'
+    cassandraQuery = 'Delete From arrivals Where arrivingat = ? IF EXISTS'
     cassandraArguments = [station]
     cassandraDatabase = 'Cassandra'
-    Log.addToLog(cassandraQuery1, cassandraArguments, cassandraDatabase)
-    Log.addToLog(cassandraQuery2, cassandraArguments, cassandraDatabase)
+    Log.addToLog(cassandraDatabase, cassandraQuery, cassandraArguments)
+    cassandraQuery = 'Delete From arrivals Where goingto = ? IF EXISTS'
+    Log.addToLog(cassandraDatabase, cassandraQuery, cassandraArguments)
 
-
-    neoQuery = "MATCH (n:Station { name: '#{station}' }) Detach DELETE n"
+    neoQuery = "MATCH (n:Station { city: '#{station}' }) DETACH DELETE n"
     neoArguments = [station]
     neoDatabase = 'Neo4j'
     Log.addToLog(neoDatabase, neoQuery, neoArguments)
@@ -76,27 +75,32 @@ class ScheduleService
   end
 
   def formatResult(results)
+    if !results.first().nil?
+      formattedResults = Array.new()
+      currentArrivingAt = results.first()["arrivingat"]
+      currentGoingTo = results.first()["goingto"]
+      currentTimeArray = Array.new()
 
-    formattedResults = Array.new()
-    currentArrivingAt = results.first()["arrivingat"]
-    currentGoingTo = results.first()["goingto"]
-    currentTimeArray = Array.new()
+      results.each { |row|
+        if row["arrivingat"] == currentArrivingAt and row["goingto"] == currentGoingTo
 
-    results.each { |row|
-      if row["arrivingat"] == currentArrivingAt and row["goingto"] == currentGoingTo
+          currentTimeArray.push(row["time"])
 
-        currentTimeArray.push(row["time"])
-
-      else
-        formattedResultsRow = [currentArrivingAt, currentGoingTo, currentTimeArray]
-        formattedResults.push(formattedResultsRow)
-        currentGoingTo = row["goingto"]
-        currentArrivingAt = row['arrivingat']
-        currentTimeArray = Array.new()
-        currentTimeArray.push(row["time"])
-      end
-    }
-    return formattedResults
+        else
+          formattedResultsRow = [currentArrivingAt, currentGoingTo, currentTimeArray]
+          formattedResults.push(formattedResultsRow)
+          currentGoingTo = row["goingto"]
+          currentArrivingAt = row['arrivingat']
+          currentTimeArray = Array.new()
+          currentTimeArray.push(row["time"])
+        end
+      }
+      formattedResultsRow = [currentArrivingAt, currentGoingTo, currentTimeArray]
+      formattedResults.push(formattedResultsRow)
+      return formattedResults
+    else
+      return nil
+    end
   end
 
 
@@ -112,7 +116,8 @@ class ScheduleService
   end
 
   def setTrackOperational(arrivingAt, goingTo, isOperational)
-    if isOperational
+    puts isOperational
+    if isOperational != 'true'
       neoQuery = "Match (arrivingAt:Station {city:'#{arrivingAt}'})-[t:track]->(goingTo:Station {city:'#{goingTo}'}) Set t.operational = 'true'"
     else
       neoQuery = "Match (arrivingAt:Station {city:'#{arrivingAt}'})-[t:track]->(goingTo:Station {city:'#{goingTo}'}) Set t.operational = 'false'"
@@ -203,10 +208,9 @@ class ScheduleService
           query = query + " and goingto = '" + goingTo + "'"
         end
       end
-
       search = @stations.prepare(query + " allow filtering;")
       results = @stations.execute(search)
-      return results
+      return formatResult(results)
     end
   end
 
@@ -220,3 +224,4 @@ class ScheduleService
     end
   end
 end
+

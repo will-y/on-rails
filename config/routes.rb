@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :schedules
   resources :tickets
   resources :destinations
+  resources :paths
 
   get 'cassandra', to: 'cassandra#index'
 

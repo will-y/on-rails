@@ -47,6 +47,20 @@ body {
   width: auto;
 }
 
+.active {
+  background-color: #272727;
+}
+
+.navbar-dark {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.nav-item {
+  padding-bottom: 8px;
+  padding-top: 8px
+}
+
 
 .alert-danger {
   background-color: rgb(64, 11, 16);

@@ -1,10 +1,10 @@
+require 'pp'
+
 class SchedulesController < ApplicationController
 
   def index
     method = params["commit"]
     service = ScheduleService.new
-    @schedule = service.getSchedule()
-    @stations = service.getStations
 
     case method
     when "Filter"
@@ -12,21 +12,47 @@ class SchedulesController < ApplicationController
       if (!params[:origin][0] || !params[:destination][0])
         @schedule = service.getSchedule()
       else
-        @schedule = service.filter(params[:origin][0], params[:time], params[:destination][0])
+
+        puts "!!!!!!!!!!!!!!!!!"
+        puts params[:origin][0]
+        puts params[:destination][0]
+        @schedule = service.filter(params[:origin][0], "", params[:destination][0])
+        pp @schedule
       end
     when "Create"
-      puts params
-      puts "params: #{params[:origin][0]}, #{params[:time]["(4i)"]}:#{params[:time]["(5i)"]}, #{params[:destination][0]},  #{params[:price][0]}"
-      service.addToSchedule(params[:origin][0], "#{params[:time]["(4i)"]}:#{params[:time]["(5i)"]}", params[:destination][0], params[:price][0])
-      puts 'creating'
+      if params[:origin][0] == params[:destination][0]
+        redirect_to new_schedule_path, notice: "Cannot have a route from #{params[:origin][0]} to #{params[:destination][0]}"
+      else
+        @schedule = service.getSchedule()
+        service.addToSchedule(params[:origin][0], "#{params[:time]["(4i)"]}:#{params[:time]["(5i)"]}", params[:destination][0], params[:price])
+      end
+
     when "Delete"
-      puts 'deleting'
+
+      @schedule = service.getSchedule()
+      service.removeFromSchedule(params[:origin][0], "#{params[:time]["(4i)"]}:#{params[:time]["(5i)"]}", params[:destination][0])
+    else
+      @schedule = service.getSchedule()
     end
+
+    @stations = service.getStations
   end
 
   def new
     service = ScheduleService.new
     @stations = service.getStations
+  end
+
+  def edit
+    puts params
+    service = ScheduleService.new
+    @routes = service.getAllRoutes
+
+    if params["commit"] == "Edit"
+      service.setTrackOperational(params[:origin], params[:destination], params[:active])
+      redirect_to edit_schedule_path(1)
+    end
+
   end
 
 end

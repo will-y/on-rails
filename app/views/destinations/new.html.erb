@@ -1,3 +1,14 @@
 <div class="container">
+  <h3 class="text-center mb-2 mt-2">Add Stations</h3>
 
+  <%= form_with(url: destinations_path, local: true, method: "get", class: "form-inline filter-form mt-3 pt-3  pb-3 pl-3") do |f| %>
+    <div class="row w-100">
+      <div class="col-9">
+        <%= f.text_field(:station, class: "form-control w-100", required: true) %>
+      </div>
+      <div class="col-3">
+        <%= f.submit("Create", method: "Create", class: "btn btn-outline-success w-100") %>
+      </div>
+    </div>
+  <% end %>
 </div>

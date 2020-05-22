@@ -1,0 +1,24 @@
+<div class="container">
+  <h3 class="text-center mt-3">Route From <%= params[:origin][0] %> To <%= params[:destination][0] %></h3>
+  <div class="row justify-content-center d-flex">
+    <div class="col-md-6">
+      <table class="table table-dark mt-4 table-striped">
+      <thead>
+      <tr>
+        <th class="text-center" scope="col"><b>Stations</b></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @results.each do |row| %>
+        <% row[1].nodes.each do |a| %>
+          <tr>
+            <td class="text-center"><%= a.properties[:city] %></td>
+          </tr>
+        <% end %>
+
+      <% end %>
+      </tbody>
+      </table>
+    </div>
+  </div>
+</div>
