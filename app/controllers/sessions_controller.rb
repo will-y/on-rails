@@ -7,7 +7,9 @@ class SessionsController < ApplicationController
 
   def create
     if User.authenticate(params[:username], params[:password])
-      session[:user_id] = User.find_by(username: params[:username]).id
+      user = User.find_by(username: params[:username])
+      session[:user_id] = user.id
+      session[:admin] = user.admin
       redirect_to user_path(session[:user_id])
     else
       redirect_to new_sessions_path, alert: "Username or password incorrect!"

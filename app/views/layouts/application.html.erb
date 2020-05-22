@@ -20,7 +20,7 @@
         <li class="nav-item <%= "active" if controller_name == 'home' %> ">
           <%= link_to "Home", root_path, class: "nav-link"%>
         </li>
-        <li class="nav-item">
+        <li class="nav-item <%= "active" if controller_name == 'destinations' %>">
           <%= link_to "Destinations", destinations_path, class: "nav-link" %>
         </li>
         <li class="nav-item <%= "active" if controller_name == 'schedules' %> ">
@@ -28,6 +28,9 @@
         </li>
         <li class="nav-item">
           <%= link_to "Train Status", edit_schedule_path(1), class: "nav-link"%>
+        </li>
+        <li class="nav-item <%= "active" if controller_name == 'paths' %>">
+          <%= link_to "Find Route", new_path_path, class: "nav-link"%>
         </li>
         <% if @current_user %>
         <li class="nav-item">

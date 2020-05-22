@@ -1,11 +1,18 @@
 <div class="container">
-  <h3 class="text-center mt-2 mb-2">Welcome Admin</h3>
+  <% if @admin %>
+    <h3 class="text-center mt-2 mb-2">Welcome Admin</h3>
+  <% else %>
+    <h3 class="text-center mt-2 mb-2">Welcome</h3>
+  <% end %>
+
   <table class="table table-dark">
     <thead>
     <tr>
       <th scope="col">Origin</th>
       <th scope="col">Destination</th>
-      <th scope="col">Toggle</th>
+      <% if @admin %>
+        <th scope="col">Toggle</th>
+      <% end %>
     </tr>
     </thead>
     <tbody>
@@ -14,7 +21,9 @@
         <tr class="<%= if route[3] == "true"; "active-route"; else "inactive" end%>">
           <td><%= route[1] %></td>
           <td><%= route[2] %></td>
-          <td><%= link_to("Toggle", {controller: "schedules",  action: "edit", origin: route[1], destination: route[2], active: route[3], commit: "Edit"}, {class: if route[3] == 'true'; "btn btn-danger"; else "btn btn-success" end})%></td>
+          <% if @admin %>
+            <td><%= link_to("Toggle", {controller: "schedules",  action: "edit", origin: route[1], destination: route[2], active: route[3], commit: "Edit"}, {class: if route[3] == 'true'; "btn btn-danger"; else "btn btn-success" end})%></td>
+          <% end %>
         </tr>
       <% end %>
     <% end %>
