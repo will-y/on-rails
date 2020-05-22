@@ -25,6 +25,20 @@
     </tbody>
   </table>
   <%= link_to "Edit", edit_user_path, class: "btn btn-outline-primary"%>
+
+  <% if @user.admin %>
+    <h3 class="text-center mt-2">Admin Controls</h3>
+    <div class="row">
+      <div class="col-6">
+        <%= link_to "Edit Stations", new_destination_path, class: "btn btn-outline-success w-100" %>
+      </div>
+      <div class="col-6">
+        <%= link_to "Edit Tracks", new_schedule_path, class: "btn btn-outline-success w-100" %>
+      </div>
+    </div>
+  <% end %>
+
+
   <h3 class="text-center mb-4">Tickets Purchased</h3>
   <% @user.tickets.each do |ticket| %>
     <table class="table table-dark mb-1">

@@ -1,4 +1,4 @@
 loop do
-  Log.mongo_log
+  Log.goThroughLog
   sleep 10
 end

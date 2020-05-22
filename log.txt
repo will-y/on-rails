@@ -1,6 +1,0 @@
-Cassandra#Select * From arrivals#[]
-Cassandra#Select * From arrivals Where arrivingat = 'asd' and time = 'asd' and goingto = 'asd' allow filtering;#[]
-Cassandra#Select * From arrivals Where arrivingat = 'sd' and time = 'sd' and goingto = 'sd' allow filtering;#[]
-Cassandra#Select * From arrivals#[]
-Cassandra#Select * From arrivals#[]
-Cassandra#Select * From arrivals#[]

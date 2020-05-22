@@ -18,11 +18,11 @@ class ScheduleService
 
   def addToSchedule(arrivingAt, time, goingTo, price)
     cassandraQuery = 'INSERT INTO arrivals (arrivingat, time, goingto, price) VALUES (?,?,?,?) IF NOT EXISTS'
-    cassandraArguments = [arrivingAt, time, goingTo, price]
+    cassandraArguments = [arrivingAt, time, goingTo, "DECIMAL_#{price}"]
     cassandraDatabase = 'Cassandra'
     Log.addToLog(cassandraDatabase, cassandraQuery, cassandraArguments)
 
-    neoQuery = "Merge(arrivingAt:Station {city:'#{arrivingAt}'}) Merge(goingTo:Station {city:'#{arrivingAt}'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)"
+    neoQuery = "Merge(arrivingAt:Station {city:'#{arrivingAt}'}) Merge(goingTo:Station {city:'#{goingTo}'}) MERGE (arrivingAt)-[:track {operational:'true'}]->(goingTo)"
     neoArguments = [arrivingAt, goingTo]
     neoDatabase = 'Neo4j'
     Log.addToLog(neoDatabase, neoQuery, neoArguments)

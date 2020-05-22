@@ -39,6 +39,16 @@
       <%= f.label(:show_payment, "Enter Payment Info", class: "form-check-label") %>
     </div>
 
+    <div class="form-check mb-2">
+      <%= f.check_box(:admin, checked_value: true, unchecked_value: false, class: "form-check-input")%>
+      <%= f.label(:admin, "Admin", class: "form-check-label") %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label(:admin_password, "Admin Password") %>
+      <%= f.password_field(:admin_password, class: "form-control", required: false) %>
+    </div>
+
     <div id="payment" style="display: none">
       <div class="form-row">
         <div class="col">

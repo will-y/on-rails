@@ -16,6 +16,9 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if User.validate_username(user_params[:username])
+      if User.authenticate_admin(user_params[:admin_password])
+
+      end
       begin
         if @user.save
           redirect_to root_path
@@ -49,6 +52,6 @@ class UsersController < ApplicationController
 
   private
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :username, :password, :phone, :email, :address, :city, :state, :zip, :credit_card, :cvv, :experation_date)
+    params.require(:user).permit(:first_name, :last_name, :username, :password, :phone, :email, :address, :city, :state, :zip, :credit_card, :cvv, :experation_date, :admin, :admin_password)
   end
 end

@@ -1,5 +1,13 @@
-class DestinationsController < ActionController::Base
+class DestinationsController < ApplicationController
   def index
+
+  end
+
+  def new
+
+  end
+
+  def edit
 
   end
 end

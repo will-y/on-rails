@@ -6,6 +6,7 @@ class User
   validates :username, presence: true
 
   attr_accessor :password
+  attr_accessor :admin_password
 
   field :first_name, type: String
   field :last_name, type: String
@@ -20,6 +21,7 @@ class User
   field :credit_card, type: String
   field :cvv, type: String
   field :exeration_date, type: String
+  field :admin, type: Boolean
 
   has_many :tickets
 
@@ -30,6 +32,10 @@ class User
     rescue Mongo::Error::NoServerAvailable
 
     end
+  end
+
+  def self.authenticate_admin(admin_password)
+    return admin_password == "Onrails433"
   end
 
   def self.validate_username(username)
@@ -44,6 +50,12 @@ class User
   def encrypt_password
     if password
       self.encrypted_password = password.crypt("$5$round=7845$salt$")
+    end
+  end
+
+  def validate_admin
+    if admin_password != "Onrails433"
+      self.admin = false
     end
   end
 
