@@ -1,6 +1,7 @@
 require 'cassandra'
 require 'neo4j/core/cypher_session/adaptors/http'
 require 'yaml'
+require 'pp'
 
 class Log
 
@@ -9,43 +10,43 @@ class Log
     File.write("log.txt", "#{database}##{query}##{arguments.join(",")}\n", mode: "a")
   end
 
-  def self.add_to_mongo_log(database, object, method)
-    File.write("log.txt", "#{database}##{object.id}##{method}\n", mode: "a")
+  def self.add_to_mongo_log(database, object, method, arguments)
+    File.write("log.txt", "#{database}##{object.id}##{method}##{arguments.join(",")}\n", mode: "a")
     File.open(object.id.to_s + ".bin", "wb") { |file| file.write(Marshal.dump(object)) }
   end
 
-  def self.mongo_log
-    if File.file?("log.txt")
-      puts "-----------------"
-      puts File.read("log.txt")
-      failed = false
-      tmp = ""
-      File.foreach("log.txt") do |line|
-
-        if failed
-          tmp = tmp + line
-        else
-
-          line = line.split("#")
-          #object = YAML.load(File.read(line[0] + ".yml"))
-          object = Marshal.load(File.binread(line[1] + ".bin"))
-
-          begin
-            if !object.send(line[2].strip)
-              failed = true
-              tmp = tmp + line.join("#")
-            else
-              `rm #{line[1]}.bin`
-            end
-          rescue
-            failed = true
-            tmp = tmp + line.join("#")
-          end
-        end
-      end
-      File.write("log.txt", tmp)
-    end
-  end
+  # def self.mongo_log
+  #   if File.file?("log.txt")
+  #     puts "-----------------"
+  #     puts File.read("log.txt")
+  #     failed = false
+  #     tmp = ""
+  #     File.foreach("log.txt") do |line|
+  #
+  #       if failed
+  #         tmp = tmp + line
+  #       else
+  #
+  #         line = line.split("#")
+  #         #object = YAML.load(File.read(line[0] + ".yml"))
+  #         object = Marshal.load(File.binread(line[1] + ".bin"))
+  #
+  #         begin
+  #           if !object.send(line[2].strip)
+  #             failed = true
+  #             tmp = tmp + line.join("#")
+  #           else
+  #             `rm #{line[1]}.bin`
+  #           end
+  #         rescue
+  #           failed = true
+  #           tmp = tmp + line.join("#")
+  #         end
+  #       end
+  #     end
+  #     File.write("log.txt", tmp)
+  #   end
+  # end
 
 
   def self.goThroughLog
@@ -63,7 +64,6 @@ class Log
           query = line[1]
           arguments = line[2].split(",")
           arguments = arguments.collect {|a| a.starts_with?("DECIMAL_") ? a[8..-1].to_d : a}
-          puts arguments
 
           if databaseName == "Cassandra"
             result = self.cassandraQuery(query, arguments)
@@ -77,16 +77,27 @@ class Log
               failed = true
               tmp = tmp + line.join("#")
             end
-          elsif databaseName == "Mongo"
+          elsif databaseName == "mongo"
             object = Marshal.load(File.binread(line[1] + ".bin"))
-
             begin
-              if !object.send(line[2].strip)
-                failed = true
-                tmp = tmp + line.join("#")
+              pp object
+              if line[3].strip == ""
+                puts "here"
+                if !object.send(line[2].strip)
+                  failed = true
+                  tmp = tmp + line.join("#")
+                else
+                  `rm #{line[1]}.bin`
+                end
               else
-                `rm #{line[1]}.bin`
+                if !object.send(line[2].strip, eval(line[3].strip))
+                  failed = true
+                  tmp = tmp + line.join("#")
+                else
+                  `rm #{line[1]}.bin`
+                end
               end
+
             rescue
               failed = true
               tmp = tmp + line.join("#")

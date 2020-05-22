@@ -3,7 +3,7 @@ class User
 
   before_save :encrypt_password
 
-  validates :username, presence: true
+  validates :phone, format: { with: /\d{3}-\d{3}-\d{4}/, message: "bad format" }
 
   attr_accessor :password
   attr_accessor :admin_password
@@ -30,7 +30,7 @@ class User
       user = User.where(username: username).first
       return user && user.encrypted_password == password.crypt("$5$round=7845$salt$")
     rescue Mongo::Error::NoServerAvailable
-
+      redirect_to root_path, notify: "Login Servers Down"
     end
   end
 
