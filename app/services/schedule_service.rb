@@ -73,26 +73,22 @@ class ScheduleService
     currentTimeArray = Array.new()
 
     results.each { |row|
-      if row["arrivingat"] == currentArrivingAt
+      if row["arrivingat"] == currentArrivingAt and row["goingto"] == currentGoingTo
 
-        if row["goingto"] == currentGoingTo
-          currentTimeArray.push(row["time"])
-
-        else
-          formattedResultsRow = [currentArrivingAt, currentGoingTo, currentTimeArray]
-          formattedResults.push(formattedResultsRow)
-          currentGoingTo = row["goingto"]
-          currentTimeArray = Array.new()
-          currentTimeArray.push(row["time"])
-        end
+        currentTimeArray.push(row["time"])
 
       else
-        currentArrivingAt = row["arrivingat"]
+        formattedResultsRow = [currentArrivingAt, currentGoingTo, currentTimeArray]
+        formattedResults.push(formattedResultsRow)
+        currentGoingTo = row["goingto"]
+        currentArrivingAt = row['arrivingat']
+        currentTimeArray = Array.new()
+        currentTimeArray.push(row["time"])
       end
     }
-
     return formattedResults
   end
+
 
   def getSchedule
     if @stations.nil?
