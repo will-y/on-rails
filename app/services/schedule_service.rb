@@ -9,10 +9,12 @@ class ScheduleService
     begin
       @cluster = Cassandra.cluster(hosts: %w[137.112.104.137 137.112.104.136 137.112.104.138], connect_timeout: 1)
       @stations = @cluster.connect("stations")
+    rescue Cassandra::Errors::NoHostsAvailable
+    end
+    begin
       http_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new('http://neo4j:Onrails433@137.112.104.139:7474')
       @neo4j_session = Neo4j::Core::CypherSession.new(http_adaptor)
-      @isConnected = http_adaptor.connected?
-    rescue Cassandra::Errors::NoHostsAvailable, Neo4j::Core::CypherSession::ConnectionFailedError
+    rescue Neo4j::Core::CypherSession::ConnectionFailedError
     end
   end
 
@@ -63,13 +65,17 @@ class ScheduleService
 
 
   def getStations
-    begin
-      neoQuery = 'Match(n:Station) return n.city ORDER BY n.city'
-      #neoArguments = []
-      #neoDatabase = 'Neo4j'
-      results = @neo4j_session.query(neoQuery)
-      return results
-    rescue Neo4j::Core::CypherSession::ConnectionFailedError
+    if !@neo4j_session.nil?
+      begin
+        neoQuery = 'Match(n:Station) return n.city ORDER BY n.city'
+        #neoArguments = []
+        #neoDatabase = 'Neo4j'
+        results = @neo4j_session.query(neoQuery)
+        return results
+      rescue Neo4j::Core::CypherSession::ConnectionFailedError
+        return nil
+      end
+    else
       return nil
     end
   end
@@ -128,20 +134,24 @@ class ScheduleService
   end
 
   def getAllRoutes
-    begin
-      neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
-      #neoArguments = []
-      #neoDatabase = 'Neo4j'
-      #Log.addToLog(neoDatabase, neoQuery, neoArguments)
-      results = @neo4j_session.query(neoQuery)
-      return results
-    rescue Neo4j::Core::CypherSession::ConnectionFailedError
+    if !@neo4j_session.nil?
+      begin
+        neoQuery = 'Match(n:Station)-[t:track]->(m:Station) Where n.city <> m.city Return Distinct n.city,m.city,t.operational Order By n.city, m.city'
+        #neoArguments = []
+        #neoDatabase = 'Neo4j'
+        #Log.addToLog(neoDatabase, neoQuery, neoArguments)
+        results = @neo4j_session.query(neoQuery)
+        return results
+      rescue Neo4j::Core::CypherSession::ConnectionFailedError
+        return nil
+      end
+    else
       return nil
     end
   end
 
   def filterRoutes(arrivingAt, goingTo)
-    if @isConnected
+    if !@neo4j_session.nil?
       if arrivingAt == "" and goingTo == ""
         return getAllRoutes
       elsif arrivingAt == ""
@@ -215,7 +225,7 @@ class ScheduleService
   end
 
   def findPath(arrivingAt, goingTo)
-    if @isConnected
+    if !@neo4j_session.nil?
       neoQuery = "Match p = shortestPath((arrivingAt:Station {city: '#{arrivingAt}'})-[t:track*]-(goingTo:Station {city: '#{goingTo}' }))  WHERE ALL (t IN relationships(p) WHERE t.operational='true') return p"
       results = @neo4j_session.query(neoQuery)
       return results

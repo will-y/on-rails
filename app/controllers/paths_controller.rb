@@ -3,8 +3,12 @@ class PathsController < ApplicationController
     method = params[:commit]
 
     if method == "Search"
-      service = ScheduleService.new
-      @results = service.findPath(params[:origin][0], params[:destination][0])
+      if params[:origin][0] == params[:destination][0]
+        redirect_to new_path_path, notice: "Please Select Differing Stations"
+      else
+        service = ScheduleService.new
+        @results = service.findPath(params[:origin][0], params[:destination][0])
+      end
 
     end
   end

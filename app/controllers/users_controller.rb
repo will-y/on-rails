@@ -10,6 +10,7 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
     rescue
       redirect_to root_path, notice: "Login Servers Down"
+      return
     end
 
     if @user.id.to_s != @current_user["$oid"].to_s
@@ -49,6 +50,7 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
     rescue
       redirect_to root_path, notice: "Login Servers Down"
+      return
     end
   end
 
@@ -57,6 +59,7 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
     rescue
       redirect_to root_path, notice: "Login Servers Down"
+      return
     end
     if params[:user][:password] == ""
       Log.add_to_mongo_log("mongo", @user, "update", [first_name: params[:user][:first_name], last_name: params[:user][:last_name], username: params[:user][:username], phone: params[:user][:phone], email: params[:user][:email]])

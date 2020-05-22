@@ -1,5 +1,6 @@
 <div class="container">
   <h3 class="text-center mt-2 mb-2">Find Route From One City To Another</h3>
+  <%if !@stations.nil? %>
   <%= form_with(url: paths_path, local: true, method: "get", class: "form-inline filter-form mt-3 pt-3  pb-3 pl-3") do |f| %>
     <div class="row w-100">
       <div class="col-4">
@@ -12,6 +13,6 @@
         <%= f.submit("Search", method: "Create", class: "btn btn-outline-primary w-100") %>
       </div>
     </div>
-
+    <% end %>
   <% end %>
 </div>

@@ -26,12 +26,8 @@ class User
   has_many :tickets
 
   def self.authenticate(username, password)
-    begin
       user = User.where(username: username).first
       return user && user.encrypted_password == password.crypt("$5$round=7845$salt$")
-    rescue Mongo::Error::NoServerAvailable
-      redirect_to root_path, notify: "Login Servers Down"
-    end
   end
 
   def self.authenticate_admin(admin_password)

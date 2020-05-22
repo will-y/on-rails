@@ -4,7 +4,9 @@ class SchedulesController < ApplicationController
 
   def index
     method = params["commit"]
+    puts("################################################33")
     service = ScheduleService.new
+    puts("################################################33")
 
     case method
     when "Filter"
@@ -36,6 +38,8 @@ class SchedulesController < ApplicationController
     end
 
     @stations = service.getStations
+    puts("Stations: $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4")
+    puts(@stations)
   end
 
   def new

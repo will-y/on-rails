@@ -1,16 +1,17 @@
 <div class="container">
   <h3 class="text-center mt-2 mb-2">Add/Delete Tracks</h3>
-  <%= form_with(url: schedules_path, local: true, method: "get", class: "form-inline filter-form mt-3 pt-3  pb-3 pl-3") do |f| %>
-    <div class="row w-100">
-      <div class="col-2">
-        <%= select(:origin, "", @stations.collect {|s| s["n.city"] }, { include_blank: false }, {class: "form-control w-100"}) %>
-      </div>
-      <div class="col-2">
-        <%= select(:destination, "", @stations.collect {|s| s["n.city"] }, { include_blank: false}, {class: "form-control w-100"}) %>
-      </div>
-      <div class="col-2">
-        <%= time_select(:time, "", {}, {class: "form-control"}) %>
-      </div>
+  <% if !@stations.nil? %>
+    <%= form_with(url: schedules_path, local: true, method: "get", class: "form-inline filter-form mt-3 pt-3  pb-3 pl-3") do |f| %>
+      <div class="row w-100">
+        <div class="col-2">
+          <%= select(:origin, "", @stations.collect { |s| s["n.city"] }, {include_blank: false}, {class: "form-control w-100"}) %>
+        </div>
+        <div class="col-2">
+          <%= select(:destination, "", @stations.collect { |s| s["n.city"] }, {include_blank: false}, {class: "form-control w-100"}) %>
+        </div>
+        <div class="col-2">
+          <%= time_select(:time, "", {}, {class: "form-control"}) %>
+        </div>
         <div class="input-group mb-2 col-2">
           <div class="input-group-prepend">
             <div class="input-group-text">$</div>
@@ -18,13 +19,13 @@
           <%= number_field(:price, "", class: "form-control", value: 50, required: true) %>
         </div>
 
-      <div class="col-2">
-        <%= f.submit("Create", method: "Create", class: "btn btn-outline-success w-100") %>
+        <div class="col-2">
+          <%= f.submit("Create", method: "Create", class: "btn btn-outline-success w-100") %>
+        </div>
+        <div class="col-2">
+          <%= f.submit("Delete", method: "Destory", class: "btn btn-outline-danger w-100") %>
+        </div>
       </div>
-      <div class="col-2">
-        <%= f.submit("Delete", method: "Destory", class: "btn btn-outline-danger w-100") %>
-      </div>
-    </div>
-
+    <% end %>
   <% end %>
 </div>

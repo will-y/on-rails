@@ -84,15 +84,16 @@ class Log
               if line[3].strip == ""
                 puts "here"
                 if !object.send(line[2].strip)
-                  failed = true
-                  tmp = tmp + line.join("#")
+                  #failed = true
+                  #tmp = tmp + line.join("#")
                 else
                   `rm #{line[1]}.bin`
                 end
               else
+                puts("right place")
                 if !object.send(line[2].strip, eval(line[3].strip))
-                  failed = true
-                  tmp = tmp + line.join("#")
+                  # failed = true
+                  #tmp = tmp + line.join("#")
                 else
                   `rm #{line[1]}.bin`
                 end
@@ -132,11 +133,9 @@ class Log
       else
         return results;
       end
-    rescue Neo4j::Core::CypherError::NoHostsAvailable
+    rescue
       return "error"
     end
-  rescue Neo4j::Core::CypherSession::ConnectionFailedError
-    return "error"
   end
 end
 
